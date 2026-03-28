@@ -1236,10 +1236,10 @@
             </div>
             <div class="cta-form">
                 <h3>Solicita tu cotizacion</h3>
-                <input type="text" placeholder="Nombre completo" required>
-                <input type="tel" placeholder="Telefono / WhatsApp" required>
-                <input type="email" placeholder="Correo electronico">
-                <select>
+                <input type="text" id="cot_nombre" placeholder="Nombre completo" required>
+                <input type="tel" id="cot_tel" placeholder="Telefono / WhatsApp" required>
+                <input type="email" id="cot_email" placeholder="Correo electronico">
+                <select id="cot_inmueble">
                     <option value="" disabled selected>Tipo de inmueble</option>
                     <option>Casa</option>
                     <option>Departamento</option>
@@ -1247,15 +1247,15 @@
                     <option>Oficina</option>
                     <option>Bodega</option>
                 </select>
-                <select>
+                <select id="cot_poliza">
                     <option value="" disabled selected>Poliza de interes</option>
                     <option>Poliza Integral</option>
                     <option>Poliza Elite</option>
                     <option>No estoy seguro</option>
                 </select>
-                <input type="text" placeholder="Ubicacion del inmueble (Ciudad, Estado)">
-                <textarea placeholder="Comentarios adicionales (opcional)"></textarea>
-                <button class="btn btn-gold" type="button" onclick="alert('Gracias por tu interes. Un asesor te contactara pronto.')">Enviar Solicitud</button>
+                <input type="text" id="cot_ubicacion" placeholder="Ubicacion del inmueble (Ciudad, Estado)">
+                <textarea id="cot_comentarios" placeholder="Comentarios adicionales (opcional)"></textarea>
+                <button class="btn btn-gold" type="button" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
             </div>
         </div>
     </div>
@@ -1443,6 +1443,35 @@
         const nav = document.getElementById('navbar');
         nav.classList.toggle('scrolled', window.scrollY > 50);
     });
+
+    // Enviar cotizacion por WhatsApp
+    function enviarWhatsApp() {
+        const nombre = document.getElementById('cot_nombre').value.trim();
+        const tel = document.getElementById('cot_tel').value.trim();
+        const email = document.getElementById('cot_email').value.trim();
+        const inmueble = document.getElementById('cot_inmueble').value;
+        const poliza = document.getElementById('cot_poliza').value;
+        const ubicacion = document.getElementById('cot_ubicacion').value.trim();
+        const comentarios = document.getElementById('cot_comentarios').value.trim();
+
+        if (!nombre || !tel) {
+            alert('Por favor ingresa al menos tu nombre y telefono.');
+            return;
+        }
+
+        let msg = '*NUEVA SOLICITUD DE COTIZACION - AVALA*\n\n';
+        msg += '*Nombre:* ' + nombre + '\n';
+        msg += '*Telefono:* ' + tel + '\n';
+        if (email) msg += '*Email:* ' + email + '\n';
+        if (inmueble) msg += '*Tipo de inmueble:* ' + inmueble + '\n';
+        if (poliza) msg += '*Poliza de interes:* ' + poliza + '\n';
+        if (ubicacion) msg += '*Ubicacion:* ' + ubicacion + '\n';
+        if (comentarios) msg += '*Comentarios:* ' + comentarios + '\n';
+        msg += '\n_Enviado desde avala.mx_';
+
+        const url = 'https://wa.me/524423228815?text=' + encodeURIComponent(msg);
+        window.open(url, '_blank');
+    }
 
     // Legal modal functions
     function openLegalModal(modalId) {
