@@ -1,0 +1,3362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAU - Formato Unico de Arrendamiento</title>
+    <style>
+        /* ========== VARIABLES Y RESET ========== */
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2b4c7e;
+            --primary-dark: #0f2440;
+            --accent: #c9a84c;
+            --accent-light: #e0c76a;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 20px 0;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-text h1 {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+        }
+
+        .logo-text span {
+            font-size: 11px;
+            opacity: 0.5;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ========== PROGRESS BAR ========== */
+        .progress-container {
+            max-width: 900px;
+            margin: 30px auto 0;
+            padding: 0 24px;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            right: 40px;
+            height: 3px;
+            background: var(--gray-300);
+            z-index: 0;
+        }
+
+        .progress-steps::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            height: 3px;
+            background: var(--accent);
+            z-index: 1;
+            transition: width 0.5s ease;
+            width: var(--progress-width, 0%);
+        }
+
+        .step-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 3px solid var(--gray-300);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--gray-400);
+            transition: all 0.3s ease;
+        }
+
+        .step-indicator.active .step-circle {
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.2);
+        }
+
+        .step-indicator.completed .step-circle {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--white);
+        }
+
+        .step-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray-400);
+            text-align: center;
+            max-width: 80px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .step-indicator.active .step-label,
+        .step-indicator.completed .step-label {
+            color: var(--primary);
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 24px 60px;
+        }
+
+        .form-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            margin-bottom: 24px;
+        }
+
+        .form-card-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .form-card-subtitle {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 30px;
+        }
+
+        /* ========== FORM ELEMENTS ========== */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--gray-800);
+            transition: all 0.2s ease;
+            background: var(--gray-50);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+        }
+
+        .form-group input::placeholder {
+            color: var(--gray-400);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* ========== TOGGLE SWITCH ========== */
+        .toggle-group {
+            display: flex;
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            gap: 4px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-option {
+            flex: 1;
+            padding: 12px 16px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--gray-500);
+            transition: all 0.3s ease;
+            border: none;
+            background: transparent;
+        }
+
+        .toggle-option.active {
+            background: var(--primary);
+            color: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        /* ========== CHECKBOX & RADIO ========== */
+        .check-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .check-item:hover {
+            border-color: var(--accent);
+        }
+
+        .check-item.selected {
+            border-color: var(--accent);
+            background: rgba(201, 168, 76, 0.08);
+            color: var(--primary);
+        }
+
+        .check-item input[type="radio"],
+        .check-item input[type="checkbox"] {
+            accent-color: var(--accent);
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ========== SECTION DIVIDER ========== */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 30px 0 20px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(to right, var(--accent), transparent);
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 54, 93, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: var(--primary-dark);
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 168, 76, 0.4);
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, var(--success) 0%, #2ecc71 100%);
+            color: var(--white);
+            padding: 16px 32px;
+            font-size: 16px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(39, 174, 96, 0.4);
+        }
+
+        /* ========== DOCUMENT CARDS ========== */
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .doc-card {
+            background: var(--gray-50);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .doc-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .doc-card-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .doc-card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .doc-card-desc {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        /* ========== ALERT ========== */
+        .alert {
+            padding: 14px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-info {
+            background: #ebf5fb;
+            border: 1px solid #3498db;
+            color: #1a5276;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-card {
+                padding: 24px 20px;
+            }
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            .step-label {
+                font-size: 9px;
+                max-width: 60px;
+            }
+            .step-circle {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+            .btn-row {
+                flex-direction: column;
+            }
+            .btn {
+                justify-content: center;
+            }
+            .doc-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========== FILE UPLOAD ========== */
+        .upload-zone {
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--gray-50);
+            margin-bottom: 12px;
+        }
+        .upload-zone:hover {
+            border-color: var(--accent);
+            background: rgba(201, 168, 76, 0.05);
+        }
+        .upload-zone input[type="file"] {
+            display: none;
+        }
+        .upload-zone .upload-icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+        .upload-zone .upload-text {
+            font-size: 13px;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+        .upload-zone .upload-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .file-list {
+            list-style: none;
+            padding: 0;
+        }
+        .file-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: #e8f5e9;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #2e7d32;
+        }
+        .file-list li button {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        /* ========== HIDDEN STEPS ========== */
+        .step-content {
+            display: none;
+        }
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== AUTH MODAL ========== */
+        .auth-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 36, 64, 0.92);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: authFadeIn 0.4s ease;
+        }
+        @keyframes authFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes authCardIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .auth-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 48px 40px;
+            max-width: 440px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+            animation: authCardIn 0.5s ease 0.1s both;
+        }
+        .auth-logo-icon {
+            display: block;
+            font-size: 42px;
+            font-weight: 900;
+            color: var(--accent);
+            letter-spacing: 6px;
+            margin-bottom: 8px;
+        }
+        .auth-card h2 {
+            font-size: 16px; font-weight: 600;
+            color: var(--gray-500); margin-bottom: 4px;
+        }
+        .auth-card .auth-subtitle {
+            font-size: 13px; color: var(--gray-500);
+            margin-bottom: 32px; letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .auth-card .auth-prompt {
+            font-size: 15px; color: var(--gray-700);
+            margin-bottom: 24px; font-weight: 500;
+        }
+        .auth-btn-group {
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .auth-btn {
+            padding: 14px 24px; border: none; border-radius: var(--radius-sm);
+            font-size: 15px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; font-family: inherit;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .auth-btn-admin {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: var(--primary-dark);
+        }
+        .auth-btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 168, 76, 0.4);
+        }
+        .auth-btn-consulta {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+        }
+        .auth-btn-consulta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 54, 93, 0.4);
+        }
+        .auth-password-section {
+            display: none; margin-top: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        .auth-password-section.visible { display: block; }
+        .auth-password-input {
+            width: 100%; padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            font-size: 15px; font-family: inherit;
+            text-align: center; margin-bottom: 12px;
+            transition: all 0.2s ease;
+            background: var(--gray-50);
+        }
+        .auth-password-input:focus {
+            outline: none; border-color: var(--accent);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+        }
+        .auth-error {
+            color: var(--danger); font-size: 13px;
+            font-weight: 600; margin-bottom: 10px;
+            display: none;
+        }
+        .auth-error.visible { display: block; animation: fadeIn 0.3s ease; }
+        .auth-btn-submit {
+            width: 100%; padding: 12px; border: none;
+            border-radius: var(--radius-sm);
+            background: var(--accent); color: var(--primary-dark);
+            font-size: 14px; font-weight: 700; cursor: pointer;
+            transition: all 0.2s; font-family: inherit;
+        }
+        .auth-btn-submit:hover { background: var(--accent-light); }
+        .auth-back-link {
+            display: inline-block; margin-top: 14px;
+            color: var(--gray-500); font-size: 13px;
+            cursor: pointer; text-decoration: underline;
+        }
+        .auth-back-link:hover { color: var(--primary); }
+
+        /* ========== ROLE BADGES ========== */
+        .role-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 14px; border-radius: 20px;
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 0.8px; text-transform: uppercase;
+        }
+        .role-badge-admin {
+            background: var(--accent); color: var(--primary-dark);
+        }
+        .role-badge-consulta {
+            background: #3498db; color: var(--white);
+        }
+        .header-right {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .btn-logout {
+            padding: 6px 14px; border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 6px; background: transparent;
+            color: var(--white); font-size: 12px;
+            font-weight: 600; cursor: pointer;
+            transition: all 0.2s; font-family: inherit;
+        }
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        /* ========== CONTRATANTE INFO BOX ========== */
+        .contratante-msg-box {
+            background: linear-gradient(135deg, #ebf5fb 0%, #d6eaf8 100%);
+            border: 2px solid #3498db;
+            border-radius: var(--radius);
+            padding: 40px 30px;
+            text-align: center;
+            color: #1a5276;
+        }
+        .contratante-msg-box .contratante-icon { font-size: 48px; margin-bottom: 12px; }
+        .contratante-msg-box h3 { font-size: 18px; margin-bottom: 8px; }
+        .contratante-msg-box p { font-size: 14px; opacity: 0.85; }
+        .btn-save-progress {
+            background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+            color: var(--white);
+        }
+        .btn-save-progress:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+        .btn-load-data {
+            padding: 8px 16px;
+            border: 2px solid var(--accent);
+            border-radius: var(--radius-sm);
+            background: rgba(201, 168, 76, 0.1);
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+        .btn-load-data:hover {
+            background: rgba(201, 168, 76, 0.2);
+            transform: translateY(-1px);
+        }
+        .toast-msg {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            background: var(--success);
+            color: var(--white);
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 10001;
+            box-shadow: var(--shadow-lg);
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* ========== DASHBOARD ========== */
+        .dashboard-import-zone {
+            border: 3px dashed var(--accent);
+            border-radius: var(--radius);
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(201, 168, 76, 0.05);
+            margin-bottom: 24px;
+        }
+        .dashboard-import-zone:hover {
+            border-color: var(--primary);
+            background: rgba(201, 168, 76, 0.12);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        .dashboard-import-zone input[type="file"] { display: none; }
+        .dashboard-import-zone .import-icon { font-size: 64px; margin-bottom: 16px; }
+        .dashboard-import-zone .import-title {
+            font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 8px;
+        }
+        .dashboard-import-zone .import-text {
+            font-size: 14px; color: var(--gray-500); font-weight: 500;
+        }
+        .btn-gold {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: var(--primary-dark);
+            font-weight: 700;
+            width: 100%;
+            justify-content: center;
+            padding: 18px 32px;
+            font-size: 17px;
+        }
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(201, 168, 76, 0.4);
+        }
+        .btn-liberar {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: var(--white);
+            padding: 18px 32px;
+            font-size: 17px;
+            width: 100%;
+            justify-content: center;
+            font-weight: 700;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: inherit;
+        }
+        .btn-liberar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(39, 174, 96, 0.4);
+        }
+        .btn-liberar:disabled {
+            opacity: 0.85;
+            cursor: default;
+            transform: none;
+            box-shadow: none;
+        }
+        .review-banner {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            position: sticky;
+            top: 88px;
+            z-index: 99;
+            display: none;
+            letter-spacing: 0.5px;
+        }
+        .liberado-banner {
+            background: #27ae60;
+            color: var(--white);
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            position: sticky;
+            top: 88px;
+            z-index: 99;
+            display: none;
+            letter-spacing: 0.5px;
+        }
+        .step-indicator-panel {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            z-index: 2;
+            cursor: pointer;
+        }
+        .step-indicator-panel .step-circle {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--accent); border: 3px solid var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px; color: var(--primary-dark);
+            transition: all 0.3s ease;
+        }
+        .step-indicator-panel .step-label {
+            font-size: 11px; font-weight: 600; color: var(--primary);
+            text-align: center; max-width: 80px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        /* ========== PRINT STYLES ========== */
+        @media print {
+            .header, .progress-container, .btn-row, .no-print, .review-banner, .liberado-banner { display: none !important; }
+            .main { max-width: 100%; margin: 0; padding: 0; }
+            .form-card { box-shadow: none; border: none; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== AUTH MODAL ========== -->
+<div class="auth-overlay" id="authOverlay">
+    <div class="auth-card">
+        <div class="auth-logo-icon">AVALA</div>
+        <h2>FAU</h2>
+        <div class="auth-subtitle">Formato Unico de Arrendamiento</div>
+        <div id="authRoleSelect">
+            <div class="auth-prompt">Selecciona tu perfil de acceso</div>
+            <div class="auth-btn-group">
+                <button class="auth-btn auth-btn-admin" onclick="showAdminLogin()">&#128274; Administrador</button>
+                <button class="auth-btn auth-btn-consulta" onclick="loginContratante()">&#128100; Contratante</button>
+            </div>
+        </div>
+        <div class="auth-password-section" id="authPasswordSection">
+            <div class="auth-prompt">Ingrese la contrasena de administrador</div>
+            <div class="auth-error" id="authError">Contrasena incorrecta. Intente de nuevo.</div>
+            <div style="position:relative;">
+                <input type="password" class="auth-password-input" id="authPassword" placeholder="Contrasena" onkeydown="if(event.key==='Enter')loginAdmin()" style="padding-right:48px;width:100%;">
+                <button onclick="var p=document.getElementById('authPassword');if(p.type==='password'){p.type='text';this.innerHTML='&#128064;'}else{p.type='password';this.innerHTML='&#128065;'}" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:20px;color:#64748b;padding:4px;" title="Mostrar/ocultar contrasena">&#128065;</button>
+            </div>
+            <button class="auth-btn-submit" onclick="loginAdmin()">Ingresar</button>
+            <div class="auth-back-link" onclick="hideAdminLogin()">&#8592; Volver a seleccionar perfil</div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== HEADER ========== -->
+<header class="header">
+    <div class="header-content">
+        <div class="logo">
+            <div style="display:flex;align-items:baseline;gap:16px;">
+                <span style="font-size:28px;font-weight:900;color:#c9a84c;letter-spacing:4px;">AVALA</span>
+                <span style="font-size:14px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:1px;">FAU | Formato Unico de Arrendamiento</span>
+            </div>
+        </div>
+        <div class="header-right" id="headerRight">
+            <div style="font-size:13px; opacity:0.7;">Por ABOGIA SAPI DE C.V.</div>
+        </div>
+    </div>
+</header>
+
+<!-- ========== REVIEW BANNER ========== -->
+<div class="review-banner" id="reviewBanner"></div>
+<div class="liberado-banner" id="liberadoBanner">DOCUMENTOS LIBERADOS - Listos para imprimir y compartir</div>
+
+<!-- ========== PROGRESS BAR ========== -->
+<div class="progress-container">
+    <div class="progress-steps" id="progressSteps">
+        <div class="step-indicator-panel" id="panelIndicator" onclick="goToDashboard()">
+            <div class="step-circle">&#9733;</div>
+            <div class="step-label">Panel</div>
+        </div>
+        <div class="step-indicator active" onclick="goToStep(1)">
+            <div class="step-circle">1</div>
+            <div class="step-label">Inmueble</div>
+        </div>
+        <div class="step-indicator" onclick="goToStep(2)">
+            <div class="step-circle">2</div>
+            <div class="step-label">Arrendador</div>
+        </div>
+        <div class="step-indicator" onclick="goToStep(3)">
+            <div class="step-circle">3</div>
+            <div class="step-label">Arrendatario</div>
+        </div>
+        <div class="step-indicator" onclick="goToStep(4)">
+            <div class="step-circle">4</div>
+            <div class="step-label">Obligado Solidario</div>
+        </div>
+        <div class="step-indicator" onclick="goToStep(5)">
+            <div class="step-circle">5</div>
+            <div class="step-label">Documentos</div>
+        </div>
+        <div class="step-indicator" onclick="goToStep(6)">
+            <div class="step-circle">6</div>
+            <div class="step-label">Generar</div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== MAIN CONTENT ========== -->
+<main class="main">
+
+    <!-- ===== DASHBOARD (ADMIN ONLY) ===== -->
+    <div class="step-content" id="stepDashboard">
+        <div class="form-card" style="text-align:center;">
+            <div class="form-card-title" style="font-size:26px; margin-bottom:8px;">Panel de Administracion</div>
+            <div class="form-card-subtitle" style="margin-bottom:40px;">Importe una solicitud de contratante o inicie una nueva solicitud manual.</div>
+
+            <div class="dashboard-import-zone" id="dashboardImportZone" onclick="document.getElementById('jsonImportInput').click();" ondragover="event.preventDefault(); this.style.borderColor='var(--primary)'; this.style.background='rgba(201,168,76,0.15)';" ondragleave="this.style.borderColor='var(--accent)'; this.style.background='rgba(201,168,76,0.05)';" ondrop="event.preventDefault(); this.style.borderColor='var(--accent)'; this.style.background='rgba(201,168,76,0.05)'; handleJsonImport(event.dataTransfer.files);">
+                <input type="file" id="jsonImportInput" accept=".json" onchange="handleJsonImport(this.files)">
+                <div class="import-icon">&#128229;</div>
+                <div class="import-title">Importar Solicitud</div>
+                <div class="import-text">Arrastre un archivo .json aqui o haga clic para seleccionar</div>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%; justify-content:center; padding:16px 32px; font-size:16px;" onclick="nuevaSolicitudManual()">
+                &#128221; Nueva Solicitud (Manual)
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== PASO 1: DATOS DEL INMUEBLE Y ARRENDAMIENTO ===== -->
+    <div class="step-content active" id="step1">
+        <div class="form-card">
+            <button class="btn-load-data" id="btnLoadSavedData" style="display:none;" onclick="cargarDatosGuardados()">&#128229; Cargar datos guardados</button>
+            <button class="btn-load-data btn-save-progress" id="btnSaveProgress" style="display:none;" onclick="guardarProgreso()">&#128190; Guardar Progreso</button>
+            <div class="form-card-title">Datos del Inmueble y Arrendamiento</div>
+            <div class="form-card-subtitle">Ingresa la informacion del inmueble y las condiciones del arrendamiento.</div>
+
+            <div class="section-divider">Tipo de Poliza</div>
+            <div class="toggle-group">
+                <button class="toggle-option active" onclick="selectToggle(this, 'tipoPoliza', 'Integral')">Integral</button>
+                <button class="toggle-option" onclick="selectToggle(this, 'tipoPoliza', 'Elite')">Elite</button>
+            </div>
+
+            <div class="section-divider">Tipo de Inmueble</div>
+            <div class="check-group" id="tipoInmueble">
+                <label class="check-item selected">
+                    <input type="radio" name="tipoInmueble" value="Casa" checked onchange="selectCheckItem(this)"> Casa
+                </label>
+                <label class="check-item">
+                    <input type="radio" name="tipoInmueble" value="Departamento" onchange="selectCheckItem(this)"> Departamento
+                </label>
+                <label class="check-item">
+                    <input type="radio" name="tipoInmueble" value="Local Comercial" onchange="selectCheckItem(this)"> Local Comercial
+                </label>
+                <label class="check-item">
+                    <input type="radio" name="tipoInmueble" value="Oficina" onchange="selectCheckItem(this)"> Oficina
+                </label>
+                <label class="check-item">
+                    <input type="radio" name="tipoInmueble" value="Bodega" onchange="selectCheckItem(this)"> Bodega
+                </label>
+            </div>
+
+            <div class="section-divider">Direccion del Inmueble</div>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Direccion completa del inmueble</label>
+                    <input type="text" id="direccionInmueble" placeholder="Calle, numero, interior, colonia, CP, ciudad, estado">
+                </div>
+                <div class="form-group">
+                    <label>Uso del inmueble</label>
+                    <select id="usoInmueble">
+                        <option value="CASA HABITACION">Casa Habitacion</option>
+                        <option value="COMERCIAL">Comercial</option>
+                        <option value="OFICINA">Oficina</option>
+                        <option value="MIXTO">Mixto</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Estado (jurisdiccion)</label>
+                    <select id="estadoJurisdiccion">
+                        <option value="QUERETARO">Queretaro</option>
+                        <option value="CIUDAD DE MEXICO">Ciudad de Mexico</option>
+                        <option value="ESTADO DE MEXICO">Estado de Mexico</option>
+                        <option value="JALISCO">Jalisco</option>
+                        <option value="NUEVO LEON">Nuevo Leon</option>
+                        <option value="GUANAJUATO">Guanajuato</option>
+                        <option value="PUEBLA">Puebla</option>
+                        <option value="AGUASCALIENTES">Aguascalientes</option>
+                        <option value="BAJA CALIFORNIA">Baja California</option>
+                        <option value="CHIHUAHUA">Chihuahua</option>
+                        <option value="COAHUILA">Coahuila</option>
+                        <option value="HIDALGO">Hidalgo</option>
+                        <option value="MICHOACAN">Michoacan</option>
+                        <option value="MORELOS">Morelos</option>
+                        <option value="SAN LUIS POTOSI">San Luis Potosi</option>
+                        <option value="SINALOA">Sinaloa</option>
+                        <option value="SONORA">Sonora</option>
+                        <option value="TABASCO">Tabasco</option>
+                        <option value="TAMAULIPAS">Tamaulipas</option>
+                        <option value="VERACRUZ">Veracruz</option>
+                        <option value="YUCATAN">Yucatan</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-divider">Condiciones Economicas</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Renta mensual ($)</label>
+                    <input type="text" id="rentaMensual" placeholder="Ej: 15,000" oninput="formatearMonto(this);convertirMontoALetras()" inputmode="numeric">
+                </div>
+                <div class="form-group">
+                    <label>Renta en letra</label>
+                    <input type="text" id="rentaLetra" placeholder="Se llena automaticamente" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Cuota de mantenimiento ($)</label>
+                    <input type="text" id="cuotaMantenimiento" placeholder="0" value="0" oninput="formatearMonto(this)" inputmode="numeric">
+                </div>
+                <div class="form-group">
+                    <label>Mantenimiento incluido en renta</label>
+                    <select id="mantenimientoIncluido">
+                        <option value="SI">Si</option>
+                        <option value="NO">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Deposito en garantia ($)</label>
+                    <input type="text" id="deposito" placeholder="Ej: 15,000" oninput="formatearMonto(this)" inputmode="numeric">
+                </div>
+                <div class="form-group">
+                    <label>Dia de pago mensual</label>
+                    <select id="diaPago">
+                        <option value="1">Dia 1 de cada mes</option>
+                        <option value="5">Dia 5 de cada mes</option>
+                        <option value="10">Dia 10 de cada mes</option>
+                        <option value="15">Dia 15 de cada mes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-divider">Vigencia del Contrato</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Meses de vigencia</label>
+                    <select id="mesesVigencia" onchange="calcularFechaFin()">
+                        <option value="6">6 meses</option>
+                        <option value="12" selected>12 meses</option>
+                        <option value="18">18 meses</option>
+                        <option value="24">24 meses</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Meses forzosos</label>
+                    <select id="mesesForzosos">
+                        <option value="6">6 meses</option>
+                        <option value="12" selected>12 meses</option>
+                        <option value="18">18 meses</option>
+                        <option value="24">24 meses</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fecha de inicio</label>
+                    <input type="date" id="fechaInicio" onchange="calcularFechaFin()">
+                </div>
+                <div class="form-group">
+                    <label>Fecha de fin</label>
+                    <input type="date" id="fechaFin" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Lugar de firma</label>
+                    <input type="text" id="lugarFirma" value="QUERETARO" placeholder="Ciudad donde se firma">
+                </div>
+                <div class="form-group">
+                    <label>Fecha de firma del contrato</label>
+                    <input type="date" id="fechaFirma">
+                </div>
+            </div>
+
+            <div class="section-divider">Forma de Pago</div>
+            <div class="toggle-group">
+                <button class="toggle-option active" onclick="selectToggle(this, 'formaPago', 'Transferencia'); document.getElementById('datosBancarios').style.display='block'">Transferencia Bancaria</button>
+                <button class="toggle-option" onclick="selectToggle(this, 'formaPago', 'Efectivo'); document.getElementById('datosBancarios').style.display='none'">Efectivo</button>
+            </div>
+
+            <div id="datosBancarios">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Titular de la cuenta</label>
+                        <input type="text" id="titularCuenta" placeholder="Nombre del titular">
+                    </div>
+                    <div class="form-group">
+                        <label>Banco</label>
+                        <input type="text" id="banco" placeholder="Ej: BBVA, Banorte, Scotiabank">
+                    </div>
+                    <div class="form-group">
+                        <label>Numero de cuenta</label>
+                        <input type="text" id="numeroCuenta" placeholder="Numero de cuenta">
+                    </div>
+                    <div class="form-group">
+                        <label>CLABE interbancaria</label>
+                        <input type="text" id="clabe" placeholder="18 digitos" maxlength="18" oninput="this.value=this.value.replace(/\D/g,'');validarClabe()" inputmode="numeric">
+                        <small id="clabeError" style="color:#e74c3c;font-size:12px;display:none;">La CLABE debe tener exactamente 18 digitos</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <div></div>
+                <button class="btn btn-primary" onclick="nextStep()">Siguiente &#8594;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PASO 2: DATOS DEL ARRENDADOR ===== -->
+    <div class="step-content" id="step2">
+        <div class="form-card">
+            <div class="form-card-title">Datos del Arrendador (Propietario)</div>
+            <div class="form-card-subtitle">Informacion de quien renta el inmueble.</div>
+
+            <div class="section-divider">Tipo de Persona</div>
+            <div class="toggle-group">
+                <button class="toggle-option active" onclick="selectToggle(this, 'tipoArrendador', 'Fisica'); togglePersonaArrendador('fisica')">Persona Fisica</button>
+                <button class="toggle-option" onclick="selectToggle(this, 'tipoArrendador', 'Moral'); togglePersonaArrendador('moral')">Persona Moral</button>
+            </div>
+
+            <div id="arrendadorFisica">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Nombre completo</label>
+                        <input type="text" id="arrendadorNombre" placeholder="Nombre(s) y Apellidos">
+                    </div>
+                    <div class="form-group">
+                        <label>Numero de INE</label>
+                        <input type="text" id="arrendadorINE" placeholder="Numero de credencial INE">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefono / Celular</label>
+                        <input type="tel" id="arrendadorTel" placeholder="10 digitos">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Email</label>
+                        <input type="email" id="arrendadorEmail" placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Domicilio particular</label>
+                        <input type="text" id="arrendadorDomicilio" placeholder="Calle, numero, colonia, CP, ciudad, estado">
+                    </div>
+                </div>
+            </div>
+
+            <div id="arrendadorMoral" style="display:none;">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Razon Social</label>
+                        <input type="text" id="arrendadorRazonSocial" placeholder="Nombre de la empresa">
+                    </div>
+                    <div class="form-group">
+                        <label>RFC</label>
+                        <input type="text" id="arrendadorRFC" placeholder="RFC de la empresa">
+                    </div>
+                    <div class="form-group">
+                        <label>Giro de la empresa</label>
+                        <input type="text" id="arrendadorGiro" placeholder="Actividad principal">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Nombre del representante legal</label>
+                        <input type="text" id="arrendadorRepLegal" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefono</label>
+                        <input type="tel" id="arrendadorMoralTel" placeholder="10 digitos">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="arrendadorMoralEmail" placeholder="correo@empresa.com">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Domicilio de la empresa</label>
+                        <input type="text" id="arrendadorMoralDomicilio" placeholder="Calle, numero, colonia, CP, ciudad, estado">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-divider">Recibo de Poliza</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Recibo a nombre de</label>
+                    <select id="reciboANombreDe">
+                        <option value="Propietario">Propietario</option>
+                        <option value="Arrendatario">Arrendatario</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Observaciones</label>
+                    <input type="text" id="arrendadorObservaciones" placeholder="Opcional">
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="prevStep()">&#8592; Anterior</button>
+                <button class="btn btn-primary" onclick="nextStep()">Siguiente &#8594;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PASO 3: DATOS DEL ARRENDATARIO ===== -->
+    <div class="step-content" id="step3">
+        <div class="form-card">
+            <div class="form-card-title">Datos del Arrendatario (Inquilino)</div>
+            <div class="form-card-subtitle">Informacion de quien va a ocupar el inmueble.</div>
+
+            <div class="section-divider">Tipo de Persona</div>
+            <div class="toggle-group">
+                <button class="toggle-option active" onclick="selectToggle(this, 'tipoArrendatario', 'Fisica'); togglePersonaArrendatario('fisica')">Persona Fisica</button>
+                <button class="toggle-option" onclick="selectToggle(this, 'tipoArrendatario', 'Moral'); togglePersonaArrendatario('moral')">Persona Moral</button>
+            </div>
+
+            <!-- PERSONA FISICA -->
+            <div id="arrendatarioFisica">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Nombre completo</label>
+                        <input type="text" id="arrendatarioNombre" placeholder="Nombre(s) y Apellidos">
+                    </div>
+                    <div class="form-group">
+                        <label>RFC</label>
+                        <input type="text" id="arrendatarioRFC" placeholder="RFC con homoclave">
+                    </div>
+                    <div class="form-group">
+                        <label>CURP</label>
+                        <input type="text" id="arrendatarioCURP" placeholder="CURP 18 caracteres" maxlength="18">
+                    </div>
+                    <div class="form-group">
+                        <label>Numero de INE</label>
+                        <input type="text" id="arrendatarioINE" placeholder="Numero de credencial INE">
+                    </div>
+                    <div class="form-group">
+                        <label>Nacionalidad</label>
+                        <input type="text" id="arrendatarioNacionalidad" value="Mexicana">
+                    </div>
+                    <div class="form-group">
+                        <label>Estado civil</label>
+                        <select id="arrendatarioEstadoCivil">
+                            <option value="Soltero(a)">Soltero(a)</option>
+                            <option value="Casado(a)">Casado(a)</option>
+                            <option value="Divorciado(a)">Divorciado(a)</option>
+                            <option value="Viudo(a)">Viudo(a)</option>
+                            <option value="Union Libre">Union Libre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefono / Celular</label>
+                        <input type="tel" id="arrendatarioTel" placeholder="10 digitos">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="arrendatarioEmail" placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Domicilio actual</label>
+                        <input type="text" id="arrendatarioDomicilio" placeholder="Calle, numero, colonia, CP, ciudad, estado">
+                    </div>
+                </div>
+
+                <div class="section-divider">Datos Laborales</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Profesion / Ocupacion</label>
+                        <input type="text" id="arrendatarioProfesion" placeholder="Ej: Ingeniero, Comerciante">
+                    </div>
+                    <div class="form-group">
+                        <label>Ingreso mensual</label>
+                        <input type="text" id="arrendatarioIngreso" placeholder="$" oninput="formatearMonto(this)" inputmode="numeric">
+                    </div>
+                    <div class="form-group">
+                        <label>Empresa donde trabaja</label>
+                        <input type="text" id="arrendatarioEmpresa" placeholder="Nombre de la empresa">
+                    </div>
+                    <div class="form-group">
+                        <label>Giro de la empresa</label>
+                        <input type="text" id="arrendatarioGiroEmpresa" placeholder="Actividad principal de la empresa">
+                    </div>
+                    <div class="form-group">
+                        <label>Pagina web de la empresa</label>
+                        <input type="text" id="arrendatarioPaginaWebEmpresa" placeholder="www.ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Antiguedad</label>
+                        <input type="text" id="arrendatarioAntiguedad" placeholder="Ej: 2 anos">
+                    </div>
+                    <div class="form-group">
+                        <label>Puesto</label>
+                        <input type="text" id="arrendatarioPuesto" placeholder="Cargo">
+                    </div>
+                    <div class="form-group">
+                        <label>Jefe inmediato - Nombre</label>
+                        <input type="text" id="arrendatarioJefeNombre" placeholder="Nombre del jefe inmediato">
+                    </div>
+                    <div class="form-group">
+                        <label>Email del jefe inmediato</label>
+                        <input type="email" id="arrendatarioJefeEmail" placeholder="correo@empresa.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Horario de trabajo</label>
+                        <input type="text" id="arrendatarioHorarioTrabajo" placeholder="Ej: 9:00 - 18:00 L-V">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefono del trabajo</label>
+                        <input type="tel" id="arrendatarioTelTrabajo" placeholder="10 digitos">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Domicilio del trabajo</label>
+                        <input type="text" id="arrendatarioDomTrabajo" placeholder="Calle, numero, CP, ciudad, estado">
+                    </div>
+                    <div class="form-group">
+                        <label>Colonia del trabajo</label>
+                        <input type="text" id="arrendatarioColoniaTrabajo" placeholder="Colonia">
+                    </div>
+                </div>
+
+                <div class="section-divider">Mascotas</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Tiene mascotas</label>
+                        <select id="arrendatarioMascotas">
+                            <option value="NO">No</option>
+                            <option value="SI">Si</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Especifique (raza, tamano, cantidad)</label>
+                        <input type="text" id="arrendatarioMascotasDetalle" placeholder="Ej: 1 perro labrador mediano">
+                    </div>
+                </div>
+
+                <div class="section-divider">Motivo de Cambio e Inmueble Actual</div>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Motivo de cambio de inmueble</label>
+                        <input type="text" id="arrendatarioMotivoCambio" placeholder="Ej: Cambio de trabajo, necesidad de mas espacio">
+                    </div>
+                    <div class="form-group">
+                        <label>Arrendador actual - Nombre</label>
+                        <input type="text" id="arrendatarioArrendadorActualNombre" placeholder="Nombre del arrendador actual">
+                    </div>
+                    <div class="form-group">
+                        <label>Arrendador actual - Telefono</label>
+                        <input type="tel" id="arrendatarioArrendadorActualTel" placeholder="Telefono">
+                    </div>
+                </div>
+
+                <div class="section-divider">Referencias Personales</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Familiar 1 - Nombre</label>
+                        <input type="text" id="refFam1Nombre" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Familiar 1 - Telefono</label>
+                        <input type="tel" id="refFam1Tel" placeholder="Telefono">
+                    </div>
+                    <div class="form-group">
+                        <label>Familiar 2 - Nombre</label>
+                        <input type="text" id="refFam2Nombre" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Familiar 2 - Telefono</label>
+                        <input type="tel" id="refFam2Tel" placeholder="Telefono">
+                    </div>
+                    <div class="form-group">
+                        <label>Familiar 3 - Nombre</label>
+                        <input type="text" id="refFam3Nombre" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Familiar 3 - Telefono</label>
+                        <input type="tel" id="refFam3Tel" placeholder="Telefono">
+                    </div>
+                    <div class="form-group">
+                        <label>Conocido 1 - Nombre</label>
+                        <input type="text" id="refCon1Nombre" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Conocido 1 - Telefono</label>
+                        <input type="tel" id="refCon1Tel" placeholder="Telefono">
+                    </div>
+                    <div class="form-group">
+                        <label>Conocido 2 - Nombre</label>
+                        <input type="text" id="refCon2Nombre" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Conocido 2 - Telefono</label>
+                        <input type="tel" id="refCon2Tel" placeholder="Telefono">
+                    </div>
+                    <div class="form-group">
+                        <label>Conocido 3 - Nombre</label>
+                        <input type="text" id="refCon3Nombre" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Conocido 3 - Telefono</label>
+                        <input type="tel" id="refCon3Tel" placeholder="Telefono">
+                    </div>
+                </div>
+
+                <div class="section-divider">Personas que Ocuparan el Inmueble</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Persona 1 - Nombre</label>
+                        <input type="text" id="ocupante1" placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Parentesco</label>
+                        <input type="text" id="ocupante1P" placeholder="Ej: Esposa, Hijo">
+                    </div>
+                    <div class="form-group">
+                        <label>Persona 2 - Nombre</label>
+                        <input type="text" id="ocupante2" placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Parentesco</label>
+                        <input type="text" id="ocupante2P" placeholder="Ej: Hijo">
+                    </div>
+                    <div class="form-group">
+                        <label>Persona 3 - Nombre</label>
+                        <input type="text" id="ocupante3" placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Parentesco</label>
+                        <input type="text" id="ocupante3P" placeholder="Ej: Hijo">
+                    </div>
+                    <div class="form-group">
+                        <label>Persona 4 - Nombre</label>
+                        <input type="text" id="ocupante4" placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Parentesco</label>
+                        <input type="text" id="ocupante4P" placeholder="Ej: Hijo">
+                    </div>
+                    <div class="form-group">
+                        <label>Persona 5 - Nombre</label>
+                        <input type="text" id="ocupante5" placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Parentesco</label>
+                        <input type="text" id="ocupante5P" placeholder="Ej: Hijo">
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERSONA MORAL -->
+            <div id="arrendatarioMoral" style="display:none;">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Nombre de la compania</label>
+                        <input type="text" id="arrendatarioMoralNombre" placeholder="Razon social">
+                    </div>
+                    <div class="form-group">
+                        <label>Giro de la empresa</label>
+                        <input type="text" id="arrendatarioMoralGiro" placeholder="Actividad principal">
+                    </div>
+                    <div class="form-group">
+                        <label>RFC</label>
+                        <input type="text" id="arrendatarioMoralRFC" placeholder="RFC de la empresa">
+                    </div>
+                    <div class="form-group">
+                        <label>Nacionalidad de la empresa</label>
+                        <input type="text" id="arrendatarioMoralNacionalidad" value="Mexicana" placeholder="Nacionalidad">
+                    </div>
+                    <div class="form-group">
+                        <label>Pagina Web</label>
+                        <input type="text" id="arrendatarioMoralPaginaWeb" placeholder="www.ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefono oficina</label>
+                        <input type="tel" id="arrendatarioMoralTelOficina" placeholder="Telefono">
+                    </div>
+                    <div class="form-group">
+                        <label>Celular</label>
+                        <input type="tel" id="arrendatarioMoralCel" placeholder="Celular">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Email</label>
+                        <input type="email" id="arrendatarioMoralEmail" placeholder="correo@empresa.com">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Domicilio de la empresa</label>
+                        <input type="text" id="arrendatarioMoralDomicilio" placeholder="Calle, numero, colonia, CP, ciudad, estado">
+                    </div>
+                </div>
+
+                <div class="section-divider">Domicilio Fiscal</div>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Domicilio fiscal (calle y numero)</label>
+                        <input type="text" id="arrendatarioMoralDomFiscal" placeholder="Calle y numero">
+                    </div>
+                    <div class="form-group">
+                        <label>Colonia</label>
+                        <input type="text" id="arrendatarioMoralDomFiscalColonia" placeholder="Colonia">
+                    </div>
+                    <div class="form-group">
+                        <label>Codigo Postal</label>
+                        <input type="text" id="arrendatarioMoralDomFiscalCP" placeholder="CP" maxlength="5">
+                    </div>
+                    <div class="form-group">
+                        <label>Ciudad / Estado</label>
+                        <input type="text" id="arrendatarioMoralDomFiscalCiudad" placeholder="Ciudad, Estado">
+                    </div>
+                </div>
+
+                <div class="section-divider">Representante Legal</div>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Nombre del representante legal</label>
+                        <input type="text" id="arrendatarioMoralRepLegal" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label>RFC del representante</label>
+                        <input type="text" id="arrendatarioMoralRepLegalRFC" placeholder="RFC con homoclave">
+                    </div>
+                    <div class="form-group">
+                        <label>CURP del representante</label>
+                        <input type="text" id="arrendatarioMoralRepLegalCURP" placeholder="CURP 18 caracteres" maxlength="18">
+                    </div>
+                    <div class="form-group">
+                        <label>Nacionalidad del representante</label>
+                        <input type="text" id="arrendatarioMoralRepLegalNacionalidad" value="Mexicana">
+                    </div>
+                    <div class="form-group">
+                        <label>Estado civil del representante</label>
+                        <select id="arrendatarioMoralRepLegalEstadoCivil">
+                            <option value="Soltero(a)">Soltero(a)</option>
+                            <option value="Casado(a)">Casado(a)</option>
+                            <option value="Divorciado(a)">Divorciado(a)</option>
+                            <option value="Viudo(a)">Viudo(a)</option>
+                            <option value="Union Libre">Union Libre</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Domicilio particular del representante</label>
+                        <input type="text" id="arrendatarioMoralRepLegalDomicilio" placeholder="Calle, numero, colonia, CP, ciudad, estado">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefono celular del representante</label>
+                        <input type="tel" id="arrendatarioMoralRepLegalTel" placeholder="10 digitos">
+                    </div>
+                    <div class="form-group">
+                        <label>Email del representante</label>
+                        <input type="email" id="arrendatarioMoralRepLegalEmail" placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Ingreso mensual neto del representante</label>
+                        <input type="number" id="arrendatarioMoralRepLegalIngreso" placeholder="$">
+                    </div>
+                    <div class="form-group">
+                        <label>Antiguedad en el puesto</label>
+                        <input type="text" id="arrendatarioMoralRepLegalAntiguedad" placeholder="Ej: 3 anos">
+                    </div>
+                </div>
+
+                <div class="section-divider">Facturacion</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Empresa mexicana</label>
+                        <select id="arrendatarioMoralMexicana">
+                            <option value="SI">Si</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Requiere factura</label>
+                        <select id="arrendatarioMoralFactura">
+                            <option value="NO">No</option>
+                            <option value="SI">Si</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Requiere factura de poliza</label>
+                        <select id="arrendatarioMoralFacturaPoliza">
+                            <option value="NO">No</option>
+                            <option value="SI">Si</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="section-divider">Personas que Ocuparan el Inmueble</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Persona 1 - Nombre</label>
+                        <input type="text" id="moralOcupante1" placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Parentesco / Relacion</label>
+                        <input type="text" id="moralOcupante1P" placeholder="Ej: Empleado, Gerente">
+                    </div>
+                    <div class="form-group">
+                        <label>Persona 2 - Nombre</label>
+                        <input type="text" id="moralOcupante2" placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Parentesco / Relacion</label>
+                        <input type="text" id="moralOcupante2P" placeholder="Ej: Empleado">
+                    </div>
+                    <div class="form-group">
+                        <label>Persona 3 - Nombre</label>
+                        <input type="text" id="moralOcupante3" placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Parentesco / Relacion</label>
+                        <input type="text" id="moralOcupante3P" placeholder="Ej: Empleado">
+                    </div>
+                    <div class="form-group">
+                        <label>Persona 4 - Nombre</label>
+                        <input type="text" id="moralOcupante4" placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Parentesco / Relacion</label>
+                        <input type="text" id="moralOcupante4P" placeholder="Ej: Empleado">
+                    </div>
+                </div>
+
+                <div class="section-divider">Referencias Comerciales</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Referencia 1 - Empresa/Contacto</label>
+                        <input type="text" id="refCom1" placeholder="Empresa y nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefono</label>
+                        <input type="tel" id="refCom1Tel" placeholder="Telefono">
+                    </div>
+                    <div class="form-group">
+                        <label>Referencia 2 - Empresa/Contacto</label>
+                        <input type="text" id="refCom2" placeholder="Empresa y nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefono</label>
+                        <input type="tel" id="refCom2Tel" placeholder="Telefono">
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="prevStep()">&#8592; Anterior</button>
+                <button class="btn btn-primary" onclick="nextStep()">Siguiente &#8594;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PASO 4: OBLIGADO SOLIDARIO ===== -->
+    <div class="step-content" id="step4">
+        <div class="form-card">
+            <div class="form-card-title">Obligado Solidario / Fiador</div>
+            <div class="form-card-subtitle">Datos de quien respalda al arrendatario.</div>
+
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Nombre completo del obligado solidario</label>
+                    <input type="text" id="obligadoNombre" placeholder="Nombre(s) y Apellidos">
+                </div>
+                <div class="form-group">
+                    <label>Numero de INE</label>
+                    <input type="text" id="obligadoINE" placeholder="Numero de credencial INE">
+                </div>
+                <div class="form-group">
+                    <label>CURP</label>
+                    <input type="text" id="obligadoCURP" placeholder="CURP 18 caracteres" maxlength="18">
+                </div>
+                <div class="form-group">
+                    <label>RFC</label>
+                    <input type="text" id="obligadoRFC" placeholder="RFC con homoclave">
+                </div>
+                <div class="form-group">
+                    <label>Parentesco con el arrendatario</label>
+                    <input type="text" id="obligadoParentesco" placeholder="Ej: Padre, Madre, Hermano">
+                </div>
+                <div class="form-group">
+                    <label>Nacionalidad</label>
+                    <input type="text" id="obligadoNacionalidad" value="Mexicana">
+                </div>
+                <div class="form-group">
+                    <label>Estado civil</label>
+                    <select id="obligadoEstadoCivil">
+                        <option value="Soltero(a)">Soltero(a)</option>
+                        <option value="Casado(a)">Casado(a)</option>
+                        <option value="Divorciado(a)">Divorciado(a)</option>
+                        <option value="Viudo(a)">Viudo(a)</option>
+                        <option value="Union Libre">Union Libre</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Telefono / Celular</label>
+                    <input type="tel" id="obligadoTel" placeholder="10 digitos">
+                </div>
+                <div class="form-group full-width">
+                    <label>Email</label>
+                    <input type="email" id="obligadoEmail" placeholder="correo@ejemplo.com">
+                </div>
+                <div class="form-group full-width">
+                    <label>Domicilio particular</label>
+                    <input type="text" id="obligadoDomicilio" placeholder="Calle, numero, colonia, CP, ciudad, estado">
+                </div>
+                <div class="form-group">
+                    <label>Profesion / Ocupacion</label>
+                    <input type="text" id="obligadoProfesion" placeholder="Ocupacion u oficio">
+                </div>
+                <div class="form-group">
+                    <label>Empresa donde trabaja</label>
+                    <input type="text" id="obligadoEmpresa" placeholder="Nombre de la empresa">
+                </div>
+                <div class="form-group">
+                    <label>Telefono del trabajo</label>
+                    <input type="tel" id="obligadoTelTrabajo" placeholder="10 digitos">
+                </div>
+                <div class="form-group">
+                    <label>Nombre del conyuge</label>
+                    <input type="text" id="obligadoConyuge" placeholder="Dejar vacio si no aplica">
+                </div>
+            </div>
+
+            <div class="section-divider">Inmueble en Garantia (Solo Fiador)</div>
+            <div class="alert alert-info">
+                <span>&#9432;</span> Llena esta seccion solo si el obligado solidario ofrece un inmueble como garantia.
+            </div>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Domicilio del inmueble en garantia</label>
+                    <input type="text" id="fiadorInmueble" placeholder="Dejar vacio si no aplica">
+                </div>
+                <div class="form-group">
+                    <label>No. de Escritura / Folio Real</label>
+                    <input type="text" id="fiadorEscrituraFolio" placeholder="Numero de escritura o folio real">
+                </div>
+                <div class="form-group">
+                    <label>Colonia del inmueble en garantia</label>
+                    <input type="text" id="fiadorInmuebleColonia" placeholder="Colonia">
+                </div>
+                <div class="form-group">
+                    <label>Alcaldia / Municipio del inmueble</label>
+                    <input type="text" id="fiadorInmuebleMunicipio" placeholder="Alcaldia o Municipio">
+                </div>
+                <div class="form-group">
+                    <label>Codigo Postal del inmueble</label>
+                    <input type="text" id="fiadorInmuebleCP" placeholder="CP" maxlength="5">
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="prevStep()">&#8592; Anterior</button>
+                <button class="btn btn-primary" onclick="nextStep()">Siguiente &#8594;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PASO 5: CARGA DE DOCUMENTOS ===== -->
+    <div class="step-content" id="step5">
+        <div class="form-card">
+            <div class="form-card-title">Carga de Documentos</div>
+            <div class="form-card-subtitle">Sube la documentacion requerida de cada parte. Se aceptan archivos PDF, PNG, JPG, JPEG.</div>
+
+            <div class="section-divider">Documentos del Arrendador</div>
+            <div class="upload-grid">
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'arrendador_ine_list')">
+                        <div class="upload-icon">&#128194;</div>
+                        <div class="upload-label">Identificacion Oficial (INE)</div>
+                        <div class="upload-text">Clic para subir archivo</div>
+                    </div>
+                    <ul class="file-list" id="arrendador_ine_list"></ul>
+                </div>
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'arrendador_domicilio_list')">
+                        <div class="upload-icon">&#127968;</div>
+                        <div class="upload-label">Comprobante de Domicilio</div>
+                        <div class="upload-text">Del inmueble a rentar</div>
+                    </div>
+                    <ul class="file-list" id="arrendador_domicilio_list"></ul>
+                </div>
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'arrendador_propiedad_list')">
+                        <div class="upload-icon">&#128220;</div>
+                        <div class="upload-label">Comprobante de Propiedad</div>
+                        <div class="upload-text">Escritura o titulo</div>
+                    </div>
+                    <ul class="file-list" id="arrendador_propiedad_list"></ul>
+                </div>
+            </div>
+
+            <div class="section-divider">Documentos del Arrendatario (Persona Fisica)</div>
+            <div class="upload-grid">
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'arrendatario_ine_list')">
+                        <div class="upload-icon">&#128194;</div>
+                        <div class="upload-label">Identificacion Oficial (INE)</div>
+                        <div class="upload-text">Clic para subir archivo</div>
+                    </div>
+                    <ul class="file-list" id="arrendatario_ine_list"></ul>
+                </div>
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'arrendatario_ingresos_list')">
+                        <div class="upload-icon">&#128176;</div>
+                        <div class="upload-label">Comprobantes de Ingresos</div>
+                        <div class="upload-text">Ultimos 3 meses</div>
+                    </div>
+                    <ul class="file-list" id="arrendatario_ingresos_list"></ul>
+                </div>
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'arrendatario_carta_list')">
+                        <div class="upload-icon">&#128188;</div>
+                        <div class="upload-label">Carta Patronal o RFC</div>
+                        <div class="upload-text">Clic para subir archivo</div>
+                    </div>
+                    <ul class="file-list" id="arrendatario_carta_list"></ul>
+                </div>
+            </div>
+
+            <div class="section-divider">Documentos del Arrendatario (Persona Moral)</div>
+            <div class="upload-grid">
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'moral_acta_list')">
+                        <div class="upload-icon">&#128220;</div>
+                        <div class="upload-label">Acta Constitutiva</div>
+                        <div class="upload-text">Con sello del RPP</div>
+                    </div>
+                    <ul class="file-list" id="moral_acta_list"></ul>
+                </div>
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'moral_fiscal_list')">
+                        <div class="upload-icon">&#128196;</div>
+                        <div class="upload-label">Constancia Situacion Fiscal</div>
+                        <div class="upload-text">RFC actualizado</div>
+                    </div>
+                    <ul class="file-list" id="moral_fiscal_list"></ul>
+                </div>
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'moral_poder_list')">
+                        <div class="upload-icon">&#128221;</div>
+                        <div class="upload-label">Poder Notarial Rep. Legal</div>
+                        <div class="upload-text">E identificacion oficial</div>
+                    </div>
+                    <ul class="file-list" id="moral_poder_list"></ul>
+                </div>
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'moral_domicilio_list')">
+                        <div class="upload-icon">&#127968;</div>
+                        <div class="upload-label">Comprobante Domicilio Empresa</div>
+                        <div class="upload-text">No mayor a 3 meses</div>
+                    </div>
+                    <ul class="file-list" id="moral_domicilio_list"></ul>
+                </div>
+            </div>
+
+            <div class="section-divider">Documentos del Obligado Solidario / Fiador</div>
+            <div class="upload-grid">
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'obligado_ine_list')">
+                        <div class="upload-icon">&#128194;</div>
+                        <div class="upload-label">Identificacion Oficial (INE)</div>
+                        <div class="upload-text">Clic para subir archivo</div>
+                    </div>
+                    <ul class="file-list" id="obligado_ine_list"></ul>
+                </div>
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'obligado_ingresos_list')">
+                        <div class="upload-icon">&#128176;</div>
+                        <div class="upload-label">Comprobantes de Ingresos</div>
+                        <div class="upload-text">Ultimos 3 meses</div>
+                    </div>
+                    <ul class="file-list" id="obligado_ingresos_list"></ul>
+                </div>
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'obligado_domicilio_list')">
+                        <div class="upload-icon">&#127968;</div>
+                        <div class="upload-label">Comprobante de Domicilio</div>
+                        <div class="upload-text">Clic para subir archivo</div>
+                    </div>
+                    <ul class="file-list" id="obligado_domicilio_list"></ul>
+                </div>
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'obligado_escritura_list')">
+                        <div class="upload-icon">&#128220;</div>
+                        <div class="upload-label">Escritura Inmueble Garantia</div>
+                        <div class="upload-text">Solo si es fiador</div>
+                    </div>
+                    <ul class="file-list" id="obligado_escritura_list"></ul>
+                </div>
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'obligado_predial_list')">
+                        <div class="upload-icon">&#128196;</div>
+                        <div class="upload-label">Ultimo Pago Predial</div>
+                        <div class="upload-text">Solo si es fiador</div>
+                    </div>
+                    <ul class="file-list" id="obligado_predial_list"></ul>
+                </div>
+                <div>
+                    <div class="upload-zone" onclick="this.querySelector('input').click()">
+                        <input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple onchange="handleUpload(this, 'obligado_matrimonio_list')">
+                        <div class="upload-icon">&#128141;</div>
+                        <div class="upload-label">Acta de Matrimonio</div>
+                        <div class="upload-text">Solo si esta casado</div>
+                    </div>
+                    <ul class="file-list" id="obligado_matrimonio_list"></ul>
+                </div>
+            </div>
+
+            <!-- Contratante final message (hidden by default) -->
+            <div class="contratante-msg-box" id="contratanteFinalMsg" style="display:none; margin-top:30px;">
+                <div class="contratante-icon">&#128196;</div>
+                <h3>Envie su solicitud</h3>
+                <p>Una vez que complete toda la informacion y suba sus documentos, presione 'Enviar Solicitud'. Se descargara un archivo que debera enviar a su asesor legal.</p>
+            </div>
+
+            <!-- Contratante: Enviar Solicitud button (hidden by default) -->
+            <div id="contratanteEnviarSection" style="display:none; margin-top:20px;">
+                <button class="btn btn-gold" onclick="enviarSolicitud()">&#128228; Enviar Solicitud</button>
+            </div>
+
+            <div class="btn-row" id="step5BtnRow">
+                <button class="btn btn-secondary" onclick="prevStep()">&#8592; Anterior</button>
+                <button class="btn btn-primary" id="step5NextBtn" onclick="nextStep()">Siguiente &#8594;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PASO 6: GENERAR DOCUMENTOS ===== -->
+    <div class="step-content" id="step6">
+        <div class="form-card">
+            <div class="form-card-title">Generar Documentos</div>
+            <div class="form-card-subtitle">Selecciona los documentos que deseas generar. Se abriran en nuevas pestanas listos para imprimir o guardar como PDF.</div>
+
+            <!-- Contratante mode message (hidden by default) -->
+            <div class="contratante-msg-box" id="contratanteMsgStep6" style="display:none;">
+                <div class="contratante-icon">&#128274;</div>
+                <h3>Acceso restringido</h3>
+                <p>Solo el administrador puede generar documentos. Contacte a su asesor legal.</p>
+            </div>
+
+            <!-- Admin doc content -->
+            <div id="adminDocContent">
+                <div class="doc-grid" id="docGrid">
+                    <div class="doc-card" onclick="generarDocumento('contrato')">
+                        <div class="doc-card-icon">&#128196;</div>
+                        <div class="doc-card-title">Contrato de Arrendamiento</div>
+                        <div class="doc-card-desc">8 paginas - Completo con clausulas</div>
+                        <div class="doc-card-mode" style="margin-top:6px; font-size:11px; font-weight:700; color:var(--accent);"></div>
+                    </div>
+                    <div class="doc-card" onclick="generarDocumento('poliza')">
+                        <div class="doc-card-icon">&#128737;</div>
+                        <div class="doc-card-title">Poliza Juridica</div>
+                        <div class="doc-card-desc">2 paginas - Cobertura legal</div>
+                        <div class="doc-card-mode" style="margin-top:6px; font-size:11px; font-weight:700; color:var(--accent);"></div>
+                    </div>
+                    <div class="doc-card" onclick="generarDocumento('pagares')">
+                        <div class="doc-card-icon">&#128176;</div>
+                        <div class="doc-card-title">Pagares</div>
+                        <div class="doc-card-desc" id="pagaresDesc">12 pagares mensuales</div>
+                        <div class="doc-card-mode" style="margin-top:6px; font-size:11px; font-weight:700; color:var(--accent);"></div>
+                    </div>
+                    <div class="doc-card" onclick="generarDocumento('investigacion')">
+                        <div class="doc-card-icon">&#128269;</div>
+                        <div class="doc-card-title">Resultado de Investigacion</div>
+                        <div class="doc-card-desc">Reporte de proteccion juridica</div>
+                        <div class="doc-card-mode" style="margin-top:6px; font-size:11px; font-weight:700; color:var(--accent);"></div>
+                    </div>
+                    <div class="doc-card" onclick="generarDocumento('privacidad')">
+                        <div class="doc-card-icon">&#128274;</div>
+                        <div class="doc-card-title">Aviso de Privacidad</div>
+                        <div class="doc-card-desc">LFPDPPP - Datos personales</div>
+                        <div class="doc-card-mode" style="margin-top:6px; font-size:11px; font-weight:700; color:var(--accent);"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;" id="generarTodosSection">
+                    <button class="btn btn-generate" id="btnGenerarTodos" onclick="generarTodos()">
+                        &#9889; Generar TODOS los Documentos
+                    </button>
+                </div>
+
+                <!-- Vista Previa button (shown during revision) -->
+                <div style="margin-top: 30px; display:none;" id="vistaPreviaSection">
+                    <button class="btn btn-generate" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);" onclick="generarTodos()">
+                        &#128065; Vista Previa de Documentos
+                    </button>
+                </div>
+
+                <!-- Liberar Documentos button -->
+                <div style="margin-top: 20px; display:none;" id="liberarSection">
+                    <button class="btn-liberar" id="btnLiberar" onclick="liberarDocumentos()">
+                        &#128275; Liberar Documentos
+                    </button>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="prevStep()">&#8592; Anterior</button>
+                <div></div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    // ========== AUTH SYSTEM ==========
+    const AUTH_PASSWORD = 'AVALA$2026.S1';
+    let userRole = null; // 'admin' or 'contratante'
+    let documentosLiberados = false;
+    let solicitudCargada = false;
+    let solicitudNombreArrendatario = '';
+
+    function showAdminLogin() {
+        document.getElementById('authRoleSelect').style.display = 'none';
+        document.getElementById('authPasswordSection').classList.add('visible');
+        document.getElementById('authPassword').focus();
+    }
+
+    function hideAdminLogin() {
+        document.getElementById('authRoleSelect').style.display = 'block';
+        document.getElementById('authPasswordSection').classList.remove('visible');
+        document.getElementById('authError').classList.remove('visible');
+        document.getElementById('authPassword').value = '';
+    }
+
+    function loginAdmin() {
+        const pwd = document.getElementById('authPassword').value;
+        if (pwd === AUTH_PASSWORD) {
+            setUserRole('admin');
+        } else {
+            document.getElementById('authError').classList.add('visible');
+            document.getElementById('authPassword').value = '';
+            document.getElementById('authPassword').focus();
+        }
+    }
+
+    function loginContratante() {
+        setUserRole('contratante');
+    }
+
+    function setUserRole(role) {
+        userRole = role;
+        sessionStorage.setItem('fau_user_role', role);
+        document.getElementById('authOverlay').style.display = 'none';
+        applyRoleMode();
+    }
+
+    function logout() {
+        sessionStorage.removeItem('fau_user_role');
+        sessionStorage.removeItem('fau_liberado');
+        sessionStorage.removeItem('fau_solicitud_cargada');
+        sessionStorage.removeItem('fau_solicitud_nombre');
+        location.reload();
+    }
+
+    function getMaxSteps() {
+        return userRole === 'contratante' ? 5 : 6;
+    }
+
+    function applyRoleMode() {
+        const headerRight = document.getElementById('headerRight');
+        const step6Indicator = document.querySelectorAll('.step-indicator')[5]; // 6th step indicator
+
+        if (userRole === 'admin') {
+            headerRight.innerHTML = '<span class="role-badge role-badge-admin">&#9733; ADMINISTRADOR</span>' +
+                '<button class="btn-logout" onclick="logout()">Cerrar Sesion</button>';
+
+            // Admin: show step 6 indicator and panel indicator
+            if (step6Indicator) step6Indicator.style.display = 'flex';
+            document.getElementById('panelIndicator').style.display = 'flex';
+
+            // Admin: ensure step 6 shows doc-grid normally
+            const contratanteMsg = document.getElementById('contratanteMsgStep6');
+            if (contratanteMsg) contratanteMsg.style.display = 'none';
+            const docContent = document.getElementById('adminDocContent');
+            if (docContent) docContent.style.display = 'block';
+
+            // Hide contratante-specific elements
+            document.getElementById('btnLoadSavedData').style.display = 'none';
+            document.getElementById('btnSaveProgress').style.display = 'none';
+
+            // Show step 5 next button, hide contratante enviar section
+            document.getElementById('step5NextBtn').style.display = '';
+            document.getElementById('contratanteEnviarSection').style.display = 'none';
+            document.getElementById('contratanteFinalMsg').style.display = 'none';
+
+            // Restore liberado state from sessionStorage
+            const savedLiberado = sessionStorage.getItem('fau_liberado');
+            if (savedLiberado === 'true') {
+                documentosLiberados = true;
+            }
+            const savedSolicitud = sessionStorage.getItem('fau_solicitud_cargada');
+            if (savedSolicitud === 'true') {
+                solicitudCargada = true;
+                solicitudNombreArrendatario = sessionStorage.getItem('fau_solicitud_nombre') || '';
+                showReviewBanner();
+            }
+
+            // Update step 6 UI based on state
+            updateStep6State();
+
+            // Show dashboard on first login (if no solicitud loaded)
+            if (!solicitudCargada) {
+                showDashboard();
+            }
+
+        } else if (userRole === 'contratante') {
+            headerRight.innerHTML = '<span class="role-badge role-badge-consulta">&#128100; CONTRATANTE</span>' +
+                '<button class="btn-logout" onclick="logout()">Cerrar Sesion</button>';
+
+            // Contratante: hide step 6 indicator and panel indicator
+            if (step6Indicator) step6Indicator.style.display = 'none';
+            document.getElementById('panelIndicator').style.display = 'none';
+
+            // Contratante: hide save/load buttons from step 1
+            document.getElementById('btnSaveProgress').style.display = 'none';
+            document.getElementById('btnLoadSavedData').style.display = 'none';
+
+            // Show enviar solicitud on step 5, hide next button
+            document.getElementById('step5NextBtn').style.display = 'none';
+            document.getElementById('contratanteEnviarSection').style.display = 'block';
+            document.getElementById('contratanteFinalMsg').style.display = 'block';
+        }
+
+        updateProgress();
+    }
+
+    function checkSession() {
+        const savedRole = sessionStorage.getItem('fau_user_role');
+        if (savedRole === 'admin' || savedRole === 'contratante') {
+            userRole = savedRole;
+            document.getElementById('authOverlay').style.display = 'none';
+            applyRoleMode();
+        }
+    }
+
+    // ========== DASHBOARD ==========
+    function showDashboard() {
+        // Hide all step contents
+        document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+        document.getElementById('stepDashboard').classList.add('active');
+        currentStep = 0;
+        updateProgress();
+    }
+
+    function goToDashboard() {
+        if (userRole === 'admin') {
+            showDashboard();
+        }
+    }
+
+    function nuevaSolicitudManual() {
+        solicitudCargada = false;
+        documentosLiberados = false;
+        sessionStorage.removeItem('fau_solicitud_cargada');
+        sessionStorage.removeItem('fau_solicitud_nombre');
+        sessionStorage.removeItem('fau_liberado');
+        solicitudNombreArrendatario = '';
+        document.getElementById('reviewBanner').style.display = 'none';
+        document.getElementById('liberadoBanner').style.display = 'none';
+        updateStep6State();
+        goToStep(1);
+    }
+
+    function handleJsonImport(files) {
+        if (!files || files.length === 0) return;
+        const file = files[0];
+        if (!file.name.endsWith('.json')) {
+            showToast('Solo se aceptan archivos .json');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                // Load form data
+                if (data.formData) {
+                    loadFormDataFromObject(data.formData);
+                }
+                // Get arrendatario name
+                solicitudNombreArrendatario = data.formData?.arrendatarioNombre || data.metadata?.arrendatarioName || 'Sin nombre';
+                solicitudCargada = true;
+                documentosLiberados = false;
+                sessionStorage.setItem('fau_solicitud_cargada', 'true');
+                sessionStorage.setItem('fau_solicitud_nombre', solicitudNombreArrendatario);
+                sessionStorage.removeItem('fau_liberado');
+
+                showReviewBanner();
+                updateStep6State();
+                showToast('Solicitud cargada: ' + solicitudNombreArrendatario + ' - Estado: Pendiente de revision');
+                goToStep(1);
+            } catch(err) {
+                showToast('Error al leer el archivo JSON: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+        // Reset file input
+        document.getElementById('jsonImportInput').value = '';
+    }
+
+    function showReviewBanner() {
+        if (documentosLiberados) {
+            document.getElementById('reviewBanner').style.display = 'none';
+            document.getElementById('liberadoBanner').style.display = 'block';
+        } else {
+            document.getElementById('reviewBanner').style.display = 'block';
+            document.getElementById('reviewBanner').textContent = 'SOLICITUD EN REVISION - ' + solicitudNombreArrendatario;
+            document.getElementById('liberadoBanner').style.display = 'none';
+        }
+    }
+
+    function updateStep6State() {
+        const generarTodosSection = document.getElementById('generarTodosSection');
+        const vistaPreviaSection = document.getElementById('vistaPreviaSection');
+        const liberarSection = document.getElementById('liberarSection');
+        const btnLiberar = document.getElementById('btnLiberar');
+        const docModes = document.querySelectorAll('.doc-card-mode');
+
+        if (solicitudCargada && !documentosLiberados) {
+            // State 1: En Revision
+            generarTodosSection.style.display = 'none';
+            vistaPreviaSection.style.display = 'block';
+            liberarSection.style.display = 'block';
+            btnLiberar.disabled = false;
+            btnLiberar.innerHTML = '&#128275; Liberar Documentos';
+            btnLiberar.style.opacity = '';
+            docModes.forEach(m => m.textContent = 'Vista Previa');
+        } else if (solicitudCargada && documentosLiberados) {
+            // State 2: Liberado
+            generarTodosSection.style.display = 'block';
+            vistaPreviaSection.style.display = 'none';
+            liberarSection.style.display = 'block';
+            btnLiberar.disabled = true;
+            btnLiberar.innerHTML = '&#9989; Documentos Liberados';
+            btnLiberar.style.opacity = '0.85';
+            docModes.forEach(m => { m.textContent = ''; });
+        } else {
+            // Normal mode (manual entry)
+            generarTodosSection.style.display = 'block';
+            vistaPreviaSection.style.display = 'none';
+            liberarSection.style.display = 'none';
+            docModes.forEach(m => { m.textContent = ''; });
+        }
+    }
+
+    function liberarDocumentos() {
+        if (!confirm('Confirma que los documentos estan correctos y desea liberarlos?')) return;
+        documentosLiberados = true;
+        sessionStorage.setItem('fau_liberado', 'true');
+        showReviewBanner();
+        updateStep6State();
+        showToast('Documentos liberados correctamente. Listos para generar.');
+    }
+
+    function generarDocumento(tipo) {
+        switch(tipo) {
+            case 'contrato': generarContrato(); break;
+            case 'poliza': generarPoliza(); break;
+            case 'pagares': generarPagares(); break;
+            case 'investigacion': generarResultadoInvestigacion(); break;
+            case 'privacidad': generarAvisoPrivacidad(); break;
+        }
+    }
+
+    // ========== ENVIAR SOLICITUD (CONTRATANTE) ==========
+    function enviarSolicitud() {
+        const formDataObj = {};
+        document.querySelectorAll('input[id], select[id], textarea[id]').forEach(function(el) {
+            if (el.type === 'file') return;
+            formDataObj[el.id] = el.value;
+        });
+        // Save radio button states
+        document.querySelectorAll('input[type="radio"]:checked').forEach(function(el) {
+            if (el.name) formDataObj['_radio_' + el.name] = el.value;
+        });
+        // Save toggle states
+        formDataObj['_toggle_tipoPoliza'] = formData.tipoPoliza;
+        formDataObj['_toggle_formaPago'] = formData.formaPago;
+        formDataObj['_toggle_tipoArrendador'] = formData.tipoArrendador;
+        formDataObj['_toggle_tipoArrendatario'] = formData.tipoArrendatario;
+
+        // Collect uploaded filenames grouped by upload zone ID
+        const uploadedFiles = {};
+        document.querySelectorAll('.file-list').forEach(function(list) {
+            const id = list.id;
+            const fileNames = [];
+            list.querySelectorAll('li span').forEach(function(span) {
+                fileNames.push(span.textContent.trim());
+            });
+            if (fileNames.length > 0) {
+                uploadedFiles[id] = fileNames;
+            }
+        });
+
+        const arrendatarioName = getVal('arrendatarioNombre') || getVal('arrendatarioMoralNombre') || 'SinNombre';
+        const now = new Date();
+        const dateStr = now.getFullYear() + '' +
+            String(now.getMonth()+1).padStart(2,'0') +
+            String(now.getDate()).padStart(2,'0');
+
+        const solicitud = {
+            formData: formDataObj,
+            uploadedFiles: uploadedFiles,
+            metadata: {
+                timestamp: now.toISOString(),
+                status: 'pendiente',
+                arrendatarioName: arrendatarioName,
+                fechaCreacion: dateStr
+            }
+        };
+
+        const jsonStr = JSON.stringify(solicitud, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'AVALA_Solicitud_' + dateStr + '_' + arrendatarioName.replace(/\s+/g, '_') + '.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showToast('Solicitud enviada exitosamente. Envie el archivo descargado a su asesor legal por WhatsApp o correo electronico a consultoriolegalsc@gmail.com');
+    }
+
+    // ========== SAVE / LOAD FORM DATA ==========
+    function saveFormDataToStorage() {
+        const data = {};
+        document.querySelectorAll('input[id], select[id], textarea[id]').forEach(function(el) {
+            if (el.type === 'file') return;
+            data[el.id] = el.value;
+        });
+        // Save radio button states
+        document.querySelectorAll('input[type="radio"]:checked').forEach(function(el) {
+            if (el.name) data['_radio_' + el.name] = el.value;
+        });
+        // Save toggle states
+        data['_toggle_tipoPoliza'] = formData.tipoPoliza;
+        data['_toggle_formaPago'] = formData.formaPago;
+        data['_toggle_tipoArrendador'] = formData.tipoArrendador;
+        data['_toggle_tipoArrendatario'] = formData.tipoArrendatario;
+        localStorage.setItem('fau_form_data', JSON.stringify(data));
+    }
+
+    function guardarProgreso() {
+        // Legacy - no longer used
+    }
+
+    function cargarDatosDesdeStorage() {
+        // Removed auto-load for contratantes
+    }
+
+    function cargarDatosGuardados() {
+        const raw = localStorage.getItem('fau_form_data');
+        if (!raw) {
+            showToast('No hay datos guardados de contratantes.');
+            return;
+        }
+        try {
+            const data = JSON.parse(raw);
+            loadFormDataFromObject(data);
+            showToast('Datos del contratante cargados correctamente');
+        } catch(e) {
+            showToast('Error al cargar datos guardados.');
+        }
+    }
+
+    function loadFormDataFromObject(data) {
+        // Populate inputs, selects, textareas by ID
+        Object.keys(data).forEach(function(key) {
+            if (key.startsWith('_')) return; // skip meta keys
+            const el = document.getElementById(key);
+            if (el && el.type !== 'file') {
+                el.value = data[key];
+            }
+        });
+        // Restore radio buttons
+        Object.keys(data).forEach(function(key) {
+            if (key.startsWith('_radio_')) {
+                const name = key.replace('_radio_', '');
+                const radio = document.querySelector('input[type="radio"][name="' + name + '"][value="' + data[key] + '"]');
+                if (radio) {
+                    radio.checked = true;
+                    selectCheckItem(radio);
+                }
+            }
+        });
+        // Restore toggles
+        if (data['_toggle_tipoPoliza']) {
+            formData.tipoPoliza = data['_toggle_tipoPoliza'];
+            restoreToggle('tipoPoliza', data['_toggle_tipoPoliza']);
+        }
+        if (data['_toggle_formaPago']) {
+            formData.formaPago = data['_toggle_formaPago'];
+            restoreToggle('formaPago', data['_toggle_formaPago']);
+        }
+        if (data['_toggle_tipoArrendador']) {
+            formData.tipoArrendador = data['_toggle_tipoArrendador'];
+            restoreToggle('tipoArrendador', data['_toggle_tipoArrendador']);
+            togglePersonaArrendador(data['_toggle_tipoArrendador'] === 'Moral' ? 'moral' : 'fisica');
+        }
+        if (data['_toggle_tipoArrendatario']) {
+            formData.tipoArrendatario = data['_toggle_tipoArrendatario'];
+            restoreToggle('tipoArrendatario', data['_toggle_tipoArrendatario']);
+            togglePersonaArrendatario(data['_toggle_tipoArrendatario'] === 'Moral' ? 'moral' : 'fisica');
+        }
+    }
+
+    function restoreToggle(key, value) {
+        document.querySelectorAll('.toggle-option').forEach(function(btn) {
+            const onclick = btn.getAttribute('onclick') || '';
+            if (onclick.indexOf("'" + key + "'") !== -1) {
+                if (onclick.indexOf("'" + value + "'") !== -1) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            }
+        });
+    }
+
+    function showToast(msg) {
+        const existing = document.querySelector('.toast-msg');
+        if (existing) existing.remove();
+        const toast = document.createElement('div');
+        toast.className = 'toast-msg';
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.remove(); }, 3500);
+    }
+
+    // ========== STATE ==========
+    let currentStep = 1;
+    const totalSteps = 6;
+    let formData = {
+        tipoPoliza: 'Integral',
+        formaPago: 'Transferencia',
+        tipoArrendador: 'Fisica',
+        tipoArrendatario: 'Fisica'
+    };
+
+    // ========== NAVIGATION ==========
+    function goToStep(step) {
+        const maxSteps = getMaxSteps();
+        if (step < 1 || step > maxSteps) return;
+        // Hide current step (could be dashboard or numbered step)
+        if (currentStep === 0) {
+            document.getElementById('stepDashboard').classList.remove('active');
+        } else {
+            document.getElementById('step' + currentStep).classList.remove('active');
+        }
+        document.getElementById('step' + step).classList.add('active');
+        currentStep = step;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function nextStep() {
+        // Validar CLABE en paso 1 si forma de pago es transferencia
+        if (currentStep === 1 && formData.formaPago === 'Transferencia') {
+            const clabe = document.getElementById('clabe');
+            if (clabe && clabe.value.length > 0 && clabe.value.length < 18) {
+                clabe.focus();
+                clabe.style.borderColor = '#e74c3c';
+                document.getElementById('clabeError').style.display = 'block';
+                showToastMsg('La CLABE interbancaria debe tener 18 digitos');
+                return;
+            }
+        }
+        const maxSteps = getMaxSteps();
+        if (currentStep < maxSteps) goToStep(currentStep + 1);
+    }
+
+    function prevStep() {
+        if (currentStep > 1) goToStep(currentStep - 1);
+        else if (currentStep === 1 && userRole === 'admin') goToDashboard();
+    }
+
+    function updateProgress() {
+        const maxSteps = getMaxSteps();
+        const indicators = document.querySelectorAll('.step-indicator');
+        indicators.forEach((ind, i) => {
+            ind.classList.remove('active', 'completed');
+            if (i + 1 === currentStep) ind.classList.add('active');
+            else if (i + 1 < currentStep && currentStep > 0) ind.classList.add('completed');
+        });
+        // Calculate progress based on visible steps
+        const visibleSteps = maxSteps;
+        const pct = currentStep > 0 ? ((currentStep - 1) / (visibleSteps - 1)) * 100 : 0;
+        document.getElementById('progressSteps').style.setProperty('--progress-width', pct + '%');
+        // Update pagares description
+        const meses = document.getElementById('mesesVigencia')?.value || 12;
+        const desc = document.getElementById('pagaresDesc');
+        if (desc) desc.textContent = meses + ' pagares mensuales';
+    }
+
+    // ========== TOGGLE & SELECTION ==========
+    function selectToggle(el, key, value) {
+        const siblings = el.parentElement.querySelectorAll('.toggle-option');
+        siblings.forEach(s => s.classList.remove('active'));
+        el.classList.add('active');
+        formData[key] = value;
+    }
+
+    function selectCheckItem(radio) {
+        const group = radio.closest('.check-group');
+        group.querySelectorAll('.check-item').forEach(item => item.classList.remove('selected'));
+        radio.closest('.check-item').classList.add('selected');
+    }
+
+    function togglePersonaArrendador(tipo) {
+        document.getElementById('arrendadorFisica').style.display = tipo === 'fisica' ? 'block' : 'none';
+        document.getElementById('arrendadorMoral').style.display = tipo === 'moral' ? 'block' : 'none';
+    }
+
+    function togglePersonaArrendatario(tipo) {
+        document.getElementById('arrendatarioFisica').style.display = tipo === 'fisica' ? 'block' : 'none';
+        document.getElementById('arrendatarioMoral').style.display = tipo === 'moral' ? 'block' : 'none';
+    }
+
+    // ========== DATE CALCULATIONS ==========
+    function calcularFechaFin() {
+        const inicio = document.getElementById('fechaInicio').value;
+        const meses = parseInt(document.getElementById('mesesVigencia').value);
+        if (inicio) {
+            const fecha = new Date(inicio);
+            fecha.setMonth(fecha.getMonth() + meses);
+            fecha.setDate(fecha.getDate() - 1);
+            document.getElementById('fechaFin').value = fecha.toISOString().split('T')[0];
+        }
+    }
+
+    // ========== FORMATEAR MONTOS CON COMAS ==========
+    function formatearMonto(input) {
+        let val = input.value.replace(/[^0-9.]/g, '');
+        let parts = val.split('.');
+        let entero = parts[0] || '';
+        entero = entero.replace(/^0+(?=\d)/, '');
+        if (entero.length > 3) {
+            entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+        input.value = parts.length > 1 ? entero + '.' + parts[1].substring(0, 2) : entero;
+    }
+
+    function limpiarMonto(val) {
+        return parseFloat((val || '0').replace(/,/g, '')) || 0;
+    }
+
+    // ========== VALIDAR CLABE ==========
+    function validarClabe() {
+        const clabe = document.getElementById('clabe');
+        const error = document.getElementById('clabeError');
+        if (clabe.value.length > 0 && clabe.value.length < 18) {
+            error.style.display = 'block';
+            clabe.style.borderColor = '#e74c3c';
+        } else {
+            error.style.display = 'none';
+            clabe.style.borderColor = '';
+        }
+    }
+
+    // ========== NUMBER TO WORDS ==========
+    function convertirMontoALetras() {
+        const monto = limpiarMonto(document.getElementById('rentaMensual').value);
+        document.getElementById('rentaLetra').value = numeroALetras(monto);
+    }
+
+    function numeroALetras(num) {
+        const unidades = ['', 'UN', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
+        const decenas = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
+        const especiales = ['DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE'];
+        const centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
+
+        if (num === 0) return 'CERO PESOS 00/100 MONEDA NACIONAL';
+
+        let entero = Math.floor(num);
+        let resultado = '';
+
+        if (entero >= 1000000) {
+            const millones = Math.floor(entero / 1000000);
+            if (millones === 1) resultado += 'UN MILLON ';
+            else resultado += convertirGrupo(millones) + ' MILLONES ';
+            entero %= 1000000;
+        }
+
+        if (entero >= 1000) {
+            const miles = Math.floor(entero / 1000);
+            if (miles === 1) resultado += 'MIL ';
+            else resultado += convertirGrupo(miles) + ' MIL ';
+            entero %= 1000;
+        }
+
+        if (entero > 0) {
+            resultado += convertirGrupo(entero);
+        }
+
+        return resultado.trim() + ' PESOS 00/100 MONEDA NACIONAL';
+
+        function convertirGrupo(n) {
+            let r = '';
+            if (n === 100) return 'CIEN';
+            if (n > 100) { r += centenas[Math.floor(n / 100)] + ' '; n %= 100; }
+            if (n >= 10 && n <= 15) return r + especiales[n - 10];
+            if (n >= 16 && n <= 19) return r + 'DIECI' + unidades[n - 10];
+            if (n >= 21 && n <= 29) return r + 'VEINTI' + unidades[n - 20];
+            if (n >= 10) { r += decenas[Math.floor(n / 10)]; n %= 10; if (n > 0) r += ' Y '; }
+            if (n > 0) r += unidades[n];
+            return r;
+        }
+    }
+
+    // ========== GET FORM VALUES ==========
+    function getVal(id) {
+        const el = document.getElementById(id);
+        return el ? el.value.trim() : '';
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '_______________';
+        const d = new Date(dateStr + 'T12:00:00');
+        const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+        return d.getDate() + ' de ' + meses[d.getMonth()] + ' del ' + d.getFullYear();
+    }
+
+    function formatMoney(val) {
+        const num = limpiarMonto(String(val));
+        return '$' + num.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // ========== DOCUMENT HEADER STYLE ==========
+    function docStyles(withWatermark) {
+        const watermarkCSS = withWatermark ? `
+                .borrador-watermark {
+                    position: fixed; top: 50%; left: 50%;
+                    transform: translate(-50%, -50%) rotate(-45deg);
+                    font-size: 120px; font-weight: 900; color: rgba(231, 76, 60, 0.15);
+                    z-index: 9999; pointer-events: none; white-space: nowrap;
+                    letter-spacing: 20px; text-transform: uppercase;
+                }
+                @media print {
+                    .borrador-watermark { position: fixed; top: 50%; left: 50%;
+                        transform: translate(-50%, -50%) rotate(-45deg);
+                        font-size: 120px; font-weight: 900; color: rgba(231, 76, 60, 0.15);
+                        z-index: 9999; pointer-events: none;
+                    }
+                }
+        ` : '';
+        return `
+            <style>
+                @page { margin: 2cm; size: letter; }
+                body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #1a1a1a; max-width: 720px; margin: 0 auto; padding: 40px 20px; }
+                h1 { text-align: center; font-size: 16px; margin-bottom: 20px; color: #1a365d; }
+                h2 { font-size: 14px; margin: 20px 0 10px; color: #1a365d; text-align: center; letter-spacing: 3px; }
+                .header-doc { text-align: center; border-bottom: 3px solid #1a365d; padding-bottom: 15px; margin-bottom: 25px; }
+                .header-doc .logo-name { font-size: 22px; font-weight: 800; color: #1a365d; letter-spacing: 2px; }
+                .header-doc .logo-sub { font-size: 11px; color: #666; }
+                p { text-align: justify; margin-bottom: 10px; }
+                .clause-title { font-weight: 700; margin-top: 15px; }
+                .signatures { display: flex; justify-content: space-between; margin-top: 60px; text-align: center; }
+                .sig-block { width: 30%; border-top: 1px solid #333; padding-top: 8px; font-size: 11px; }
+                table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+                table td, table th { border: 1px solid #ccc; padding: 8px 10px; font-size: 11px; }
+                table th { background: #1a365d; color: white; }
+                .page-break { page-break-before: always; }
+                .data-box { border: 2px solid #1a365d; padding: 15px; margin: 15px 0; border-radius: 8px; }
+                ul { margin-left: 20px; }
+                li { margin-bottom: 5px; }
+                @media print { body { padding: 0; } }
+                ${watermarkCSS}
+            </style>
+        `;
+    }
+
+    function shouldShowWatermark() {
+        return userRole === 'admin' && solicitudCargada && !documentosLiberados;
+    }
+
+    function getWatermarkHtml() {
+        if (shouldShowWatermark()) {
+            return '<div class="borrador-watermark">BORRADOR</div>';
+        }
+        return '';
+    }
+
+    // ========== GENERATE: CONTRATO ==========
+    function generarContrato() {
+        const mesesNumToLetra = {1:'uno',2:'dos',3:'tres',4:'cuatro',5:'cinco',6:'seis',7:'siete',8:'ocho',9:'nueve',10:'diez',11:'once',12:'doce',13:'trece',14:'catorce',15:'quince',16:'dieciséis',17:'diecisiete',18:'dieciocho',19:'diecinueve',20:'veinte',21:'veintiuno',22:'veintidós',23:'veintitrés',24:'veinticuatro',25:'veinticinco',26:'veintiséis',27:'veintisiete',28:'veintiocho',29:'veintinueve',30:'treinta',36:'treinta y seis',48:'cuarenta y ocho'};
+
+        const d = {
+            arrendadorNombre: getVal('arrendadorNombre').toUpperCase(),
+            arrendatarioNombre: getVal('arrendatarioNombre').toUpperCase(),
+            obligadoNombre: getVal('obligadoNombre').toUpperCase(),
+            obligadoDomicilio: getVal('obligadoDomicilio').toUpperCase(),
+            direccion: getVal('direccionInmueble').toUpperCase(),
+            uso: getVal('usoInmueble'),
+            estado: getVal('estadoJurisdiccion'),
+            lugar: getVal('lugarFirma'),
+            renta: formatMoney(getVal('rentaMensual')),
+            rentaLetra: getVal('rentaLetra'),
+            deposito: formatMoney(getVal('deposito')),
+            depositoLetra: numeroALetras(parseFloat(getVal('deposito')) || 0),
+            mesesForzosos: getVal('mesesForzosos'),
+            mesesForzososLetra: mesesNumToLetra[parseInt(getVal('mesesForzosos'))] || getVal('mesesForzosos'),
+            fechaInicio: formatDate(getVal('fechaInicio')),
+            fechaFin: formatDate(getVal('fechaFin')),
+            fechaFirma: formatDate(getVal('fechaFirma')),
+            diaPago: getVal('diaPago'),
+            arrendatarioTel: getVal('arrendatarioTel'),
+            obligadoTel: getVal('obligadoTel'),
+            titularCuenta: getVal('titularCuenta').toUpperCase(),
+            banco: getVal('banco').toUpperCase(),
+            clabe: getVal('clabe'),
+        };
+
+        d.pagoInfo = formData.formaPago === 'Transferencia' ?
+            `<p>"EL ARRENDATARIO" se obliga a cubrir el depósito de la renta mediante transferencia bancaria a la siguiente cuenta: ${d.renta} (${d.rentaLetra}), a la cuenta CLABE ${d.clabe}, de ${d.banco} a favor de ${d.titularCuenta}.</p>` :
+            `<p>"EL ARRENDATARIO" se obliga a cubrir el pago de la renta en efectivo en el local objeto de este contrato.</p>`;
+
+        const showWatermark = !documentosLiberados;
+        const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Contrato de Arrendamiento</title>${docStyles(showWatermark)}</head><body>
+            ${showWatermark ? '<div class="borrador-watermark">BORRADOR</div>' : ''}
+            <div class="header-doc">
+                <div class="logo-name">AVALA</div>
+                <div class="logo-sub">CONTRATO DE ARRENDAMIENTO</div>
+            </div>
+
+            <p>CONTRATO DE ARRENDAMIENTO QUE EN TÉRMINOS DE LO QUE DISPONE LA LEGISLACIÓN CIVIL VIGENTE DEL ESTADO DE <strong>${d.estado}</strong>, CELEBRAN POR UNA PARTE EL C. <strong>${d.arrendadorNombre}</strong>, QUIEN EN ESTE ACTO SE OSTENTA COMO EL LEGÍTIMO PROPIETARIO Y POSESIONARIO DEL INMUEBLE OBJETO DE ESTE CONTRATO Y A QUIEN EN LO SUCESIVO SE LE LLAMARÁ <strong>"EL ARRENDADOR"</strong>, Y POR LA OTRA PARTE, EL C. <strong>${d.arrendatarioNombre}</strong>, A QUIEN SE LE DENOMINARÁ COMO <strong>"EL ARRENDATARIO"</strong>, ASÍ COMO LA C. <strong>${d.obligadoNombre}</strong>, A QUIEN SE LE DENOMINARÁ <strong>"LA OBLIGADA SOLIDARIA"</strong>, QUIENES CUENTAN CON CAPACIDAD LEGAL PARA CONTRATAR Y OBLIGARSE AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS QUE A CONTINUACIÓN SE DETALLAN:</p>
+
+            <h2>D E C L A R A I O N E S</h2>
+
+            <p class="clause-title">1.- DECLARA "EL ARRENDADOR":</p>
+            <p>a). - Llamarse como ha quedado establecido, ser una persona de nacionalidad mexicana, mayor de edad, que es legítimo propietario del inmueble objeto de este contrato, que cuenta con las facultades suficientes y necesarias para celebrar el presente contrato de arrendamiento respecto del inmueble ubicado en <strong>${d.direccion}</strong>.</p>
+            <p>b). - Que es su voluntad celebrar el presente contrato de arrendamiento y que no tiene impedimento jurídico alguno para obligarse en términos de este, por lo que se obliga de conformidad a las cláusulas que más adelante se precisan.</p>
+            <p>c). - Que es su voluntad otorgar en arrendamiento el inmueble indicado en la declaración "a)" de este apartado.</p>
+            <p>d). - Que a la firma del presente contrato se identifica mediante credencial para votar con fotografía vigente, debidamente expedida por el Instituto Nacional Electoral.</p>
+            <p>e). - Que manifiesta bajo protesta de decir verdad no tener conocimiento alguno sobre si "EL ARRENDATARIO" O "LA OBLIGADA SOLIDARIA", se encuentran o han estado involucrados directa o indirectamente en la comisión de algún hecho que la ley señale como delito, que se manifiesta como persona honorable y que a la firma de este contrato actúa sin dolo y de buena fe.</p>
+
+            <p class="clause-title">2.- DECLARA "EL ARRENDATARIO":</p>
+            <p>a). - Llamarse como ha quedado establecido, ser una persona física, mayor de edad, que se encuentra en pleno ejercicio de su capacidad legal, por lo que no tiene impedimento jurídico alguno para celebrar el presente contrato de arrendamiento y obligarse al cumplimiento de las cláusulas que contiene el presente acuerdo de voluntades.</p>
+            <p>b). - Que bajo protesta de decir verdad y enterado de las consecuencias legales que esto conlleva, manifiesta que el inmueble materia del presente contrato lo destinará única y exclusivamente para un fin lícito mismo que se determina en el cuerpo del presente contrato y que cubrirá la renta y pago de servicios oportunamente, con los recursos propios que recibe de su trabajo.</p>
+            <p>c). - Que, a la firma del presente contrato, se presenta con identificación oficial para votar con fotografía, expedida por el Instituto Nacional Electoral.</p>
+            <p>d). - Manifiesta que para efectos del presente contrato señala como domicilio para oír y recibir notificaciones el inmueble enunciado en el inciso a) de las declaraciones de "EL ARRENDADOR", del presente instrumento, asimismo manifiesta que dichas notificaciones, aún las de carácter personal, se podrán realizar con cualquier persona que se encuentre en el citado inmueble.</p>
+            <p>e). - Que conoce y es su interés tomar en arrendamiento el inmueble ubicado en <strong>${d.direccion}</strong>. Materia de este contrato y QUE SE COMPROMETE DARLE UNICAMENTE USO ${d.uso}.</p>
+            <p>f). - Que recibió de conformidad el inmueble materia de este instrumento a su entera satisfacción, con todas las instalaciones completas y funcionando, y que los recursos con los que pagará el arrendamiento serán obtenidos de manera lícita.</p>
+            <p>g). - Que por así convenir a sus intereses es su deseo y está dispuesto a tomar en arrendamiento el que se describe en la declaración 1 inciso "a" de conformidad con los términos y condiciones que se establecen en este contrato. Que en sus actividades jamás ha incurrido en la comisión de delito alguno incluyendo los que establece la Ley Nacional de Extinción de dominio reglamentaria del artículo 22 de la Constitución Política De los Estados Unidos Mexicanos y los que establece la Constitución Política de los Estados Unidos Mexicanos.</p>
+            <p>h). – Que durante la vigencia de este contrato y mientras se encuentre en posesión del inmueble tomara todas las medidas razonables y convenientes para evitar que cualquier persona, incluyendo sus funcionarios, empleados, prestadores de servicios, visitantes, clientes y en general cualquier persona a la que permita el ingreso al inmueble, cometa delito alguno, particularmente a los que se refiere la Ley Nacional de Extinción de dominio reglamentaria del artículo 22 de la Constitución Política De los Estados Unidos Mexicanos y los que establece la Constitución Política de los Estados Unidos Mexicanos.</p>
+            <p>i). – Que es su deseo e intención celebrar el presente contrato de arrendamiento y arrendar el inmueble a "EL ARRENDADOR" en los términos y bajo las condiciones que establece el presente contrato, asegurando que todas las declaraciones, manifestaciones y garantías hechas al presente instrumento son verdaderas precisas y ciertas.</p>
+
+            <p class="clause-title">3.- DECLARA "LA OBLIGADA SOLIDARIA":</p>
+            <p>a). - Llamarse como ha quedado establecido, ser persona física, mayor de edad de nacionalidad mexicana, en pleno ejercicio de sus capacidades legales, por lo que no tiene impedimento jurídico alguno para celebrar el presente contrato de arrendamiento y obligarse al cumplimiento de las cláusulas que contiene el presente acuerdo de voluntades.</p>
+            <p>b). – Que a la firma del presente contrato se identifican mediante credencial con fotografía. expedida por el instituto Nacional Electoral.</p>
+            <p>c). - Que señalan como domicilio para oír y recibir toda clase de notificaciones aun las de carácter personal, el ubicado en <strong>${d.obligadoDomicilio}</strong>.</p>
+
+            <p class="clause-title">4. - DECLARAN "LAS PARTES":</p>
+            <p>a). -Que en el presente contrato no existe dolo, error, mala fe, o cualquier otro vicio de la voluntad por lo que expresamente renuncian a invocarlos en cualquier tiempo.</p>
+            <p>b). – Que reconoce la personalidad con la que comparecen a la celebración de este contrato y expresamente convienen en someterse a las obligaciones contenidas siguientes:</p>
+
+            <h2>C L A U S U L A S</h2>
+
+            <p class="clause-title">PRIMERA. - OBJETO Y USO DEL BIEN INMUEBLE ARRENDADO.</p>
+            <p>"EL ARRENDADOR" concede a "EL ARRENDATARIO", el uso y goce del inmueble, ubicado en <strong>${d.direccion}</strong>. El cual se encuentra en perfecto estado, ya que reúne todas las condiciones de higiene y seguridad que exigen las normas jurídicas aplicables, en tal virtud "EL ARRENDATARIO" recibe el inmueble arrendado a su más entera satisfacción, Inventario fotográfico.</p>
+            <p>"EL ARRENDATARIO" se compromete desde este momento a que el inmueble objeto del presente contrato tendrá única y exclusivamente el uso ${d.uso}, y que el incumplimiento a lo anterior será motivo de rescisión del presente contrato; en virtud de que "EL ARRENDATARIO" se compromete a no dar un uso distinto al mismo, ni a realizar actividades ilícitas dentro del mismo, así como mantenerlo en el estado que se le ha entregado.</p>
+
+            <p class="clause-title">SEGUNDA. - VIGENCIA DE CONTRATO.</p>
+            <p>El plazo del arrendamiento es por <strong>${d.mesesForzosos}</strong>(<strong>${d.mesesForzososLetra}</strong>) meses forzosos para "LAS PARTES", vigencia que inicia a partir del día <strong>${d.fechaInicio}</strong> y vence el día <strong>${d.fechaFin}</strong>, por lo que sí "EL ARRENDATARIO" desea continuar con la relación de arrendamiento, deberá de celebrar un nuevo contrato por escrito con "EL ARRENDADOR", debiendo para tal efecto dar previo aviso con al menos 30 treinta días naturales de anticipación, con un incremento en la renta conforme al índice nacional de precios del consumidor.</p>
+            <p>Una vez <strong>VENCIDO</strong> el término citado, sí "EL ARRENDATARIO" continuara ocupando el inmueble arrendado, el presente contrato NO se considerará prorrogado y el importe de la renta mensual se incrementará en un 30% mensual, por cada mes o fracción, hasta que se realice la formal entrega del inmueble a satisfacción de "EL ARRENDADOR", independientemente de que proceda hacer efectiva la pena prevista para este caso, "EL ARRENDATARIO" renuncia expresamente a los beneficios de prórroga de un año y a la tácita reconducción contenida en el Código Civil de la entidad en vigor de cuyo contenido y alcance queda enterado por lectura y comentario entre las partes.</p>
+            <p>No obstante lo anterior "EL ARRENDADOR" queda facultado para demandar a "EL ARRENDATARIO" extrajudicial o judicialmente el otorgamiento de un nuevo contrato de arrendamiento o la terminación del contrato con la desocupación y entrega de la localidad arrendada, en cuyo caso "EL ARRENDATARIO" se compromete desocupar en un plazo no mayor a quince días naturales a partir del día en que se le haga el requerimiento, y en caso contrario "EL ARRENDATARIO" pagará daños y perjuicios, así como gastos y costas que genere la desocupación y entrega del inmueble objeto del arrendamiento.</p>
+
+            <p class="clause-title">TERCERA. - VALOR DE LA RENTA Y FORMA DE PAGO.</p>
+            <p>La renta estipulada por la ocupación de dicho inmueble incluido el mantenimiento, es la cantidad de <strong>${d.renta} (${d.rentaLetra})</strong>. Mensuales adelantados, cantidad que deberá de pagar "EL ARRENDATARIO" a "EL ARRENDADOR" por anticipado los días <strong>${d.diaPago}</strong> de cada mes, por lo que todo pago de renta pactada, que se realice después de los 5 cinco días naturales posteriores a la fecha de pago de cada día causará un interés moratorio a razón del 10% mensual, sumándose este interés al pago de la renta del mes siguiente, independientemente de que se actualice la hipótesis de rescisión del presente contrato por falta de pago puntual de renta.</p>
+            ${d.pagoInfo}
+            <p>Ambas partes convienen en que a partir del día <strong>${d.fechaInicio}</strong>, todo mes que ocupe "EL ARRENDATARIO" el inmueble arrendado, se considerará forzoso y deberá de pagarlo íntegramente, aun y cuando ocupe el inmueble un solo día.</p>
+            <p>"EL ARRENDATARIO" no podrá retener la renta en ningún caso, ni bajo ningún título judicial o extrajudicial, sino que la pagará íntegramente en los términos pactados en este contrato.</p>
+
+            <p class="clause-title">CUARTA. - CONSERVACIÓN DEL INMUEBLE.</p>
+            <p>"EL ARRENDATARIO" Conviene en que el bien arrendado lo recibe, en buen estado, en condiciones e higiene, seguridad y salubridad, todo lo cual devolverá al terminarse el arrendamiento con el deterioro natural del uso, siendo por cuenta suya los gastos de reparación y obligándose a indemnizar a "EL ARRENDADOR" por cualquier daño o variación en el inmueble por parte de sus empleados, familia, ocupantes y personas que acudan a la propiedad, comprometiéndose a mantener aseados y en buen estado todos los servicios e instalaciones existentes.</p>
+
+            <p class="clause-title">QUINTA. - OBRAS, MEJORAS O BENEFICIOS AL INMUEBLE.</p>
+            <p>Las partes pactan que todas las obras, mejoras o beneficios que se realicen en el inmueble pasarán a formar parte del patrimonio de "EL ARRENDADOR", sin que se genere ninguna contraprestación por dichas mejoras, obras o beneficios.</p>
+            <p>"EL ARRENDATARIO" está de acuerdo y conforme en que cualquier obra, mejora o adaptación que realicen a inmueble materia del presente contrato, solo las podrá efectuar con autorización previa y por escrito de "EL ARRENDADOR", siempre y cuando no se perjudique la estabilidad del inmueble, y aquellas obras, mejoras o beneficios que efectúe y que tengan el carácter de permanentes quedarán en beneficio gratuito de "EL ARRENDADOR", sin que "EL ARRENDATARIO" pueda destruirlas o retirarlas al término del arrendamiento. Todos los gastos que se eroguen por adaptaciones serán por cuenta y riesgo de "EL ARRENDATARIO".</p>
+            <p>Asimismo, y en caso de que "EL ARRENDATARIO" obtenga el permiso para realizar obras, mejoras o beneficios al inmueble, desde este momento se obliga a tramitar los permisos administrativos y fiscales necesarios que para tal efecto se requieran, mismos que serán de su entera responsabilidad y correrán por su cuenta.</p>
+            <p>Dado que dichas reparaciones correrán por cuenta de "EL ARRENDATARIO", las cargas administrativas que por las mismas se pueden generar, serán de su entera responsabilidad, por lo que en este acto "EL ARRENDATARIO" libera de dichas cargas a "EL ARRENDADOR", limitando la responsabilidad de "EL ARRENDADOR" a la mera autorización de dichas reparaciones.</p>
+            <p>Las reparaciones de carácter estructural, daños causados por fuerza mayor, humedades o vicios ocultos serán por cuenta de "EL ARRENDADOR", salvo aquellas que se deban a desperfectos causados por el mal uso por parte de "EL ARRENDATARIO" o por las demás personas que habiten o visiten el inmueble arrendado. Si se requiere hacer alguna reparación de índole estructural necesaria para el uso a que está destinado el inmueble arrendado, "EL ARRENDATARIO" se compromete a poner en conocimiento de "EL ARRENDADOR" o de quien represente sus derechos dicha situación por escrito, en un término de diez días naturales a partir de que se tuvo conocimiento del desperfecto, recabando copia con acuse de recibo, pues en caso contrario incurrirá en responsabilidad.</p>
+
+            <p class="clause-title">SEXTA. - PAGO DE SERVICIOS DEL INMUEBLE ARRENDADO.</p>
+            <p>Queda expresamente convenido que los gastos que se causen por concepto de consumo de energía eléctrica, agua, gas, se cubrirán por parte de "EL ARRENDATARIO" ya que serán de su entera responsabilidad. Y deberá entregar los recibos originales debidamente pagados mes con mes a "EL ARRENDADOR", lo anterior en virtud de que no se tendrá por pagada la renta en caso de incumplimiento en el pago de los servicios.</p>
+
+            <p class="clause-title">SÉPTIMA. - DEPÓSITO EN GARANTÍA.</p>
+            <p>"EL ARRENDATARIO" entrega en depósito a "EL ARRENDADOR" la cantidad de <strong>${d.deposito} (${d.depositoLetra})</strong>, por concepto de depósito que garantiza el cuidado del inmueble arrendado; este depósito deberá de ser actualizado cada vez que se firme un nuevo contrato y por ningún motivo se tomará a cuenta de rentas, "EL ARRENDADOR" está autorizada a deducir del depósito en garantía, el importe de las reparaciones necesarias y que no sean resultado del uso natural y cotidiano del inmueble, así como cualquier pago de servicios o penalizaciones. Ambos contratantes acuerdan que el depósito o el restante de el en caso presentarse algún daño o falta de pago de servicios el depósito será devuelto 30 días después de la entrega de la propiedad y/o de que los adeudos hayan quedado saldados, de la misma manera se realizará la devolución en caso de que no haya daños o adeudos el depósito de manera íntegra.</p>
+
+            <p class="clause-title">OCTAVA. - TENENCIA DE MASCOTAS Y RESPONSABILIDAD CIVIL.</p>
+            <p>"EL ARRENDATARIO" manifiesta que habitará el inmueble en compañía de [Número y especie de mascotas, ej: 1 perro raza mediana], obligándose estrictamente a lo siguiente:</p>
+            <p>A) DAÑOS AL INMUEBLE: Será responsable de cualquier daño causado por las mascotas en muros, puertas, marcos, jardines, sistemas de riego o acabados. Se especifica que el aroma a orina, manchas en pisos o alfombras y ralladuras en madera no se consideran desgaste natural, por lo que su reparación o sustitución será pagada íntegramente por "EL ARRENDATARIO".</p>
+            <p>B) ÁREAS COMUNES Y CONVIVENCIA: En caso de que el inmueble se encuentre en régimen de condominio o privada, "EL ARRENDATARIO" se obliga a respetar el reglamento interno respecto al tránsito de mascotas (uso de correa, recolección de heces y zonas prohibidas). Cualquier multa impuesta por la administración del condominio derivada de las mascotas será cubierta por "EL ARRENDATARIO" de forma inmediata.</p>
+            <p>C) CONTROL DE RUIDO: Se compromete a evitar que las mascotas alteren el orden o la tranquilidad de los vecinos mediante ladridos o ruidos excesivos, especialmente en horarios nocturnos. El reporte constante de vecinos por ruidos molestos será causa de rescisión de contrato.</p>
+            <p>D) HIGIENE Y FUMIGACIÓN: "EL ARRENDATARIO" mantendrá el inmueble en condiciones óptimas de salubridad. Al desocupar el inmueble, se obliga a entregar un certificado de fumigación profesional contra pulgas y garrapatas emitido por una empresa certificada, para garantizar la higiene a los futuros habitantes.</p>
+            <p>E) RESPONSABILIDAD CIVIL: "EL ARRENDADOR" queda exento de cualquier responsabilidad civil o penal por ataques, mordeduras o daños que las mascotas de "EL ARRENDATARIO" pudieran causar a terceros dentro o fuera del inmueble.</p>
+            <p>El incumplimiento de cualquiera de estas disposiciones, o la introducción de mascotas adicionales no autorizadas por escrito, será motivo de rescisión automática del presente contrato sin responsabilidad para "EL ARRENDADOR"</p>
+
+            <p class="clause-title">NOVENA. - LEY NACIONAL DE EXTINCIÓN DE DOMINIO Y LEY FEDERAL PARA LA PREVENCIÓN E IDENTIFICACIÓN DE OPERACIONES CON RECURSOS DE PROCEDENCIA ILÍCITA.</p>
+            <p>"EL ARRENDATARIO" bajo protesta de decir verdad y a sabiendas de las consecuencias legales que eso conlleva, se compromete a dar única y exclusivamente el uso de ${d.uso}. Al inmueble objeto del presente contrato, pagando la renta y los servicios con los recursos lícitos que obtiene de su actividad lícita a la que se dedica, así como también se compromete a no realizar conductas sospechosas y/o inadecuadas ante terceros, ni a realizar actos ilícitos dentro del inmueble arrendado, ni incurrir en algún delito del orden común o Federal.</p>
+            <p>"EL ARRENDATARIO" también se obliga a no tener o permitir en dicho inmueble el almacenamiento de armas de fuego, armas blancas, pólvora, explosivos, droga de cualquier naturaleza, instrumentos para procesarla y/o cualquier otro de naturaleza análoga que sirva o haya servido para cometer algún ilícito, siendo "EL ARRENDATARIO" la única responsable de éstos, en caso de que se pretenda involucrar al inmueble materia de este contrato y/o a "EL ARRENDADOR" o propietario del mismo, se deslinda desde este momento tanto inmueble como a su propietario de dicha responsabilidad y por lo tanto, no será aplicable la LEY NACIONAL DE EXTINCIÓN DE DOMINIO O LA LEY DE EXTINCIÓN DE DOMINIO DE LA ENTIDAD. En el caso de no concedido de que se iniciará el juicio de cualquier índole la renta seguirá corriendo hasta finiquitar el proceso respectivo.</p>
+            <p>Las partes convienen que "EL ARRENDATARIO", posesionaria y/u ocupantes del inmueble materia del presente contrato serán los únicos responsables si se comete cualquier delito de carácter local o federal y/o dentro de inmueble arrendado, así también "EL ARRENDATARIO" cuidará que no existan personas secuestradas y/o vehículos o instrumentos que provengan de algún ilícito, por lo que ni el agente del ministerio público, ni la autoridad judicial, Federal o Estatal podrán inculpar a "EL ARRENDADOR" de responsabilidad alguna conforme a la LEY NACIONAL DE EXTINCIÓN DE DOMINIO, ni de ninguna otra legislación Estatal o Federal aplicable.</p>
+            <p>Convienen las partes en que, si dado el caso se inicie un proceso de extinción de dominio en contra del inmueble arrendado, "EL ARRENDATARIO" se obliga a pagar los gastos y honorarios de los abogados que se contraten para la debida defensa, así como a pagar los daños y perjuicios que se le causen a "EL ARRENDADOR".</p>
+            <p>Las partes celebrantes del presente contrato manifiestan que están en conocimiento de la existencia de Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita (LFPIORPI), su reglamento y las reglas de carácter general, por lo que se comprometen a dar cumplimiento a dichas normas, antes y durante la vigencia del presente acuerdo de voluntades.</p>
+
+            <p class="clause-title">DÉCIMA. - CONTRATACIÓN DE SEGUROS.</p>
+            <p>Las partes convienen que "EL ARRENDADOR" no es responsable de la seguridad de los ocupantes de la propiedad, ni de los bienes que "EL ARRENDATARIO" introduzca en el inmueble. Por lo que, en caso de contratación de seguros, si fuese de responsabilidad civil, el beneficiario será "EL ARRENDADOR" y si fuese para casa habitación por robo, el beneficiario será "EL ARRENDATARIO".</p>
+
+            <p class="clause-title">DÉCIMA PRIMERA. - DE LOS DAÑOS O FALTANTES.</p>
+            <p>"EL ARRENDADOR" no se hace responsable de los daños o faltantes sufridos en vehículos, bienes muebles o patrimonio de "EL ARRENDATARIO" durante la ocupación o desocupación del inmueble, ni durante el tiempo que dure su estancia en el mismo, ya que "EL ARRENDATARIO" queda a cargo de su propia seguridad.</p>
+
+            <p class="clause-title">DÉCIMA SEGUNDA. - DE LOS SINIESTROS.</p>
+            <p>"EL ARRENDATARIO" no es responsable por los daños y perjuicios causados en el inmueble arrendado, originados por sismos, incendios, inundaciones y demás accidentes que provengan de caso fortuito y fuerza mayor. Lo anterior no es aplicable si en determinación judicial, se comprueba que dichos accidentes ocurridos al bien arrendado, fueron por causa imputable a "EL ARRENDATARIO", el cual deberá pagar íntegramente los daños ocasionados en el inmueble y los que haya causado a terceros, deslindando de este hecho a "EL ARRENDADOR".</p>
+
+            <p class="clause-title">DÉCIMA TERCERA. - DE LA CONTRATACIÓN DE PROTECCIÓN JURÍDICA.</p>
+            <p>"EL ARRENDATARIO" se compromete a contratar y pagar una póliza jurídica, como protección jurídica para eventos posteriores a la firma del presente instrumento y que representen un conflicto entre los contratantes.</p>
+
+            <p class="clause-title">DÉCIMA CUARTA. - RECUPERACIÓN DEL INMUEBLE.</p>
+            <p>"EL ARRENDATARIO" faculta y autoriza en este acto al LIC. ERIK HIPÓLITO ALVARADO, para que, en caso de abandono, entregue la posesión del inmueble, sin que el autorizado conlleve alguna responsabilidad civil, penal o administrativa.</p>
+
+            <p class="clause-title">DÉCIMA QUINTA. – DE LOS VICIOS OCULTOS EN LA PROPIEDAD.</p>
+            <p>"EL ARRENDADOR" deberá hacerse responsable por los vicios ocultos de la propiedad que puedan surgir durante el presente contrato y "EL ARRENDATARIO" será responsable de todos los daños, reparaciones y gastos generados por el uso normal y cotidiano del inmueble.</p>
+
+            <p class="clause-title">DÉCIMA SEXTA. -PROHIBICIÓN DE SUBARRENDAR Y CEDER DERECHOS.</p>
+            <p>"EL ARRENDATARIO" se compromete a no subarrendar, ni a ceder a terceras personas, parcial o totalmente, el uso del bien inmueble materia de este contrato.</p>
+
+            <p class="clause-title">DÉCIMA SEPTIMA. - CAUSAS DE RESCISIÓN DE CONTRATO.</p>
+            <p>"EL ARRENDADOR" podrá rescindir el presente contrato, en los siguientes casos:</p>
+            <p>A) Si "EL ARRENDATARIO" incumple con el pago de más de una renta (Artículo 2383 del Código Civil del Estado de Querétaro).</p>
+            <p>B) Si "EL ARRENDATARIO" incumple con el pago de los servicios de energía eléctrica, gas, etc.</p>
+            <p>C) Si "EL ARRENDATARIO" almacena en el inmueble objetos pesados, inflamables o explosivos que pue causar daños al inmueble dado en arrendamiento.</p>
+            <p>D) Si "EL ARRENDATARIO" no paga en tiempo y forma la renta pactada.</p>
+            <p>E) Si "EL ARRENDATARIO" tiene o realiza conductas sospechosas y/o inadecuadas ante terceros que haga suponer tiene alguna actividad ilícita dentro del inmueble arrendado y áreas comunes.</p>
+            <p>F) Si "EL ARRENDATARIO" incurre en algún delito del orden común o federal dentro del inmueble.</p>
+            <p>G) Si "EL ARRENDATARIO" usa el inmueble para un objeto distinto al señalado en el presente contrato.</p>
+            <p>H) Si "EL ARRENDATARIO" genera escándalos y/o actitudes inapropiadas para los vecinos.</p>
+            <p>l) Si "EL ARRENDATARIO" subarrienda en todo o en partes el inmueble arrendado.</p>
+            <p>J) SI "EL ARRENDATARIO" deja en estado de abandono la propiedad sin aviso previo de que se ausentara por un periodo de tiempo</p>
+            <p>k) Si "EL ARRENDATARIO" NO DA CUMPLIMIENTO A CUALQUIERA DE LAS CLÁUSULAS CONTENIDAS EN EL PRESENTE CONTRATO.</p>
+
+            <p class="clause-title">DÉCIMA OCTAVA. - CAUSAS DE TERMINACIÓN ANTICIPADA.</p>
+            <p>Las partes acuerdan que serán causales de terminación anticipada del presente contrato, las siguientes:</p>
+            <p>A) Si "EL ARRENDADOR" basado en las conductas sospechosas o inadecuadas de "EL ARRENDATARIO", lo hacen suponer que se tiene una actividad ilícita dentro del inmueble arrendado o en áreas comunes.</p>
+            <p>B) Por voluntad de ambas partes.</p>
+            <p>C) Por causa de fallecimiento de "EL ARRENDATARIO"</p>
+
+            <p class="clause-title">DÈCIMA NOVENA. - DE LA TERMINACIÓN DEL CONTRATO Y LA DESOCUPACIÓN DEL INMUEBLE.</p>
+            <p>Las partes acuerdan que, sin necesidad de resolución judicial, al término del presente contrato y/o la entrega física, jurídica, real y material del inmueble, materia del mismo, la podrá realizar "EL ARRENDATARIO" y/o a quien autorice mediante carta poder simple, indistintamente, sin que ello implique cesación de las obligaciones contraídas por las partes hasta en tanto "EL ARRENDADOR" se dé por satisfecho y/o se hayan cumplido las mismas, comprometiéndose a entregar el inmueble como fue recibido, con el simple deterioro que por el uso normal sufra el mismo. La devolución del inmueble objeto del presente contrato de arrendamiento se hará mediante carta-entrega firmando "EL ARRENDADOR" de conformidad.</p>
+            <p>"EL ARRENDATARIO", acepta y se obliga a pagar los gastos y costas de procedimientos legales, daños y perjuicios que se ocasionen a "EL ARRENDADOR", además de la cantidad que resulte de dos meses de renta, si se da el caso que siguiere ocupando el inmueble arrendado a pesar de haber terminado la vigencia del arrendamiento y/o sin consentimiento de "EL ARRENDADOR".</p>
+
+            <p class="clause-title">VIGÉSIMA "LA OBLIGADA SOLIDARIA".</p>
+            <p>"LA OBLIGADA SOLIDARIA" Renuncia a los beneficios de la orden de excusión y por tanto es OBLIGADO SOLIDARIO, bajo protesta de decir verdad y a sabiendas de las consecuencias legales que eso conlleva, manifiestan que "EL ARRENDATARIO" dará el uso ${d.uso}, al inmueble objeto del presente contrato y que éste pagará la renta y los servicios con los recursos lícitos que obtiene de su actividad lícita a la que se dedica, así como también garantizan que dentro del inmueble arrendado no se realizarán conductas sospechosas y/o inadecuadas ante terceros, ni actos ilícitos, ni mucho menos incurrir en algún delito del orden común o federal. Y manifiesta que su obligación solidaria será por la vigencia de este contrato y que se firme la carta de entrega con la aceptación y conformidad de "EL ARRENDADOR" y quede finiquitado.</p>
+            <p>"LA OBLIGADA SOLIDARIA", para garantizar las obligaciones contraídas en el presente contrato y en particular para garantizar el pago de las rentas pactadas durante el término del arrendamiento, se constituyen como obligados solidarios y mancomunados de "EL ARRENDATARIO".</p>
+            <p>Asimismo, "LA OBLIGADA SOLIDARIA" y "EL ARRENDATARIO" responderán ante "EL ARRENDADOR" de cualquier acción de la autoridad competente en aplicación de la Ley Nacional de Extinción de Dominio cualquier otra de naturaleza similar, por el uso indebido que se hiciere del inmueble arrendado.</p>
+
+            <p class="clause-title">VIGÉSIMA PRIMERA. - DESOCUPACIÓN ANTICIPADA DEL INMUEBLE.</p>
+            <p>Ambas partes acuerdan que en caso de que "EL ARRENDATARIO" desee desocupar, el inmueble materia del presente contrato, en forma anticipada y antes de la fecha de vencimiento del presente, tendrá que dar aviso por escrito a "EL ARRENDADOR", con 30 treinta días naturales de anticipación y pagará a "EL ARRENDADOR" una pena convencional consistente en 2 meses de renta.</p>
+
+            <p class="clause-title">VIGÉSIMA SEGUNDA. - COMUNICACIÓN ELECTRÓNICA.</p>
+            <p>"LAS PARTES" acuerdan que toda notificación, aviso o requerimiento relacionado con este contrato podrá realizarse vía WhatsApp a los números telefónicos indicados en sus firmas. Ambas partes reconocen plena validez legal a las comunicaciones enviadas por este medio.</p>
+
+            <p class="clause-title">VIGÉSIMA TERCERA. - DESOCUPACIÓN INMEDIATA POR INCUMPLIMIENTO.</p>
+            <p>"EL ARRENDATARIO" acepta expresamente que, en caso de adeudar dos o más meses de renta o al término de la vigencia del contrato sin haber firmado uno nuevo, su derecho de posesión fenece automáticamente. En este acto, "EL ARRENDATARIO" otorga su consentimiento para que, de no desocupar en un plazo de 5 días naturales tras el requerimiento del "EL ARRENDADOR" en caso contrario se pueda solicitar ante el juez la ejecución inmediata del lanzamiento, renunciando "EL ARRENDATARIO" a cualquier prórroga legal que establezca el Código Civil del Estado de ${d.estado}.</p>
+
+            <p class="clause-title">VIGÉSIMA CUARTA. - RESPONSABILIDAD LABORAL.</p>
+            <p>"EL ARRENDADOR" no participa en ningún tipo de relación y/o responsabilidad y/o liquidación laboral, empresarial o de cualquier otra índole, que pudiera tener "EL ARRENDATARIO" con sus empleados y/o socios; tampoco será responsable de cualquier relación obrero-patronal que se genere en este domicilio con "EL ARRENDATARIO", ni cualquier otra persona física o moral, dentro del inmueble arrendado.</p>
+
+            <p class="clause-title">VIGÉSIMA QUINTA. - DE LA MEDIACIÓN Y JUSTICIA ALTERNATIVA.</p>
+            <p>En caso de controversia sobre la interpretación o cumplimiento del presente contrato, "LAS PARTES" acuerdan someterse al procedimiento de mediación ante el Centro de Mediación del Poder Judicial del Estado de ${d.estado} o un mediador privado certificado. Si las partes llegan a un acuerdo, este será elevado a la categoría de cosa juzgada, obligándose a su cumplimiento inmediato sin necesidad de juicio previo.</p>
+
+            <p class="clause-title">VIGÉSIMA SEXTA. - JURISDICCIÓN Y COMPETENCIA.</p>
+            <p>Las partes se someten expresamente a las disposiciones del Código Civil del Estado de <strong>${d.estado}</strong> y para regular todo lo relativo a este instrumento y para su interpretación y cumplimiento se someten a la jurisdicción y competencia de los tribunales en <strong>${d.lugar}</strong>, razón por la cual ambos contratantes renuncian expresamente al fuero que por razón de su domicilio presente o futuro pudiera corresponderles.</p>
+
+            <p style="margin-top:30px;">Leído que fue por ambas partes y en virtud de que no existe dolo, mala fe o cualquier otro vicio de la voluntad, para los efectos legales conducentes, se firma el presente contrato por triplicado, y lo firman, conjuntamente las partes, para constancia, en <strong>${d.lugar}</strong>, el día <strong>${d.fechaFirma}</strong>.</p>
+
+            <table border="1" cellpadding="8" cellspacing="0" style="width:100%; margin-top:40px; border-collapse:collapse; text-align:center;">
+                <thead>
+                    <tr>
+                        <th>PARTE</th>
+                        <th>NOMBRE Y FIRMA</th>
+                        <th>IDENTIFICACIÓN (INE)</th>
+                        <th>WHATSAPP DE NOTIFICACIÓN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ARRENDADOR</strong></td>
+                        <td style="height:80px;">${d.arrendadorNombre}<br><br><br></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ARRENDATARIO</strong></td>
+                        <td style="height:80px;">${d.arrendatarioNombre}<br><br><br></td>
+                        <td></td>
+                        <td>${d.arrendatarioTel}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OBLIGADA SOLIDARIA</strong></td>
+                        <td style="height:80px;">${d.obligadoNombre}<br><br><br></td>
+                        <td></td>
+                        <td>${d.obligadoTel}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </body></html>`;
+
+        openDoc(html);
+    }
+
+    // ========== GENERATE: POLIZA ==========
+    function generarPoliza() {
+        const arrendadorNombre = getVal('arrendadorNombre').toUpperCase() || 'NOMBRE DEL ARRENDADOR';
+        const arrendatarioNombre = getVal('arrendatarioNombre').toUpperCase() || 'NOMBRE DEL ARRENDATARIO';
+        const direccion = getVal('direccionInmueble').toUpperCase() || 'DIRECCION DEL INMUEBLE';
+        const renta = formatMoney(getVal('rentaMensual'));
+
+        const wm = shouldShowWatermark();
+        const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Poliza Juridica</title>${docStyles(wm)}</head><body>
+            ${wm ? '<div class="borrador-watermark">BORRADOR</div>' : ''}
+            <div class="header-doc">
+                <div class="logo-name">ABOGIA SAPI DE C.V.</div>
+                <div class="logo-sub">ABOGIA SAPI DE C.V. — Poliza Juridica de Arrendamiento</div>
+            </div>
+
+            <h1>POLIZA JURIDICA DE ARRENDAMIENTO</h1>
+            <h2>CONTRATO DE PRESTACION DE SERVICIOS JURIDICOS PROFESIONALES</h2>
+
+            <p><strong>PARTES:</strong> Por una parte, la persona moral <strong>ABOGIA SAPI DE C.V.</strong> (en lo sucesivo "CONSULTORIO LEGAL") y por la otra El C. <strong>${arrendadorNombre}</strong> (en lo sucesivo "EL ARRENDADOR").</p>
+
+            <h2>C L A U S U L A S</h2>
+
+            <p class="clause-title">PRIMERA. OBJETO.</p>
+            <p>"CONSULTORIO LEGAL" se obliga a prestar servicios de asesoria y representacion legal para garantizar el cumplimiento del contrato de arrendamiento celebrado respecto al inmueble ubicado en: <strong>${direccion}</strong>.</p>
+
+            <p class="clause-title">SEGUNDA. ALCANCE DE LOS SERVICIOS.</p>
+            <p>La cobertura juridica integral comprende:</p>
+            <ul>
+                <li><strong>Juicio de Desahucio:</strong> Tramitacion completa para lograr la desocupacion y entrega del inmueble por falta de pago de rentas o vencimiento de contrato.</li>
+                <li><strong>Cobranza Judicial y Extrajudicial:</strong> Acciones para recuperar rentas vencidas, pago de servicios (CEA, CFE) y cuotas de mantenimiento.</li>
+                <li><strong>Defensa en Extincion de Dominio:</strong> Representacion legal para acreditar la buena fe de "EL ARRENDADOR" ante autoridades federales o estatales.</li>
+                <li><strong>Danos al Inmueble:</strong> Reclamacion judicial de danos que excedan el desgaste natural por el uso.</li>
+            </ul>
+
+            <p class="clause-title">TERCERA. NOTIFICACION DE INCUMPLIMIENTO.</p>
+            <p>"EL ARRENDADOR" debera notificar a consultoriolegalsc@gmail.com cualquier retraso en el pago de la renta dentro de los primeros <strong>5 dias naturales</strong> posteriores al vencimiento.</p>
+
+            <p class="clause-title">CUARTA. GASTOS EXTRAORDINARIOS.</p>
+            <p>"CONSULTORIO LEGAL" no cobra honorarios adicionales por los juicios, pero "EL ARRENDADOR" cubrira los gastos externos directos:</p>
+            <ul>
+                <li>Copias certificadas, peritajes externos y edictos.</li>
+                <li>Gastos de ejecucion de lanzamiento (Cerrajero, flete para mudanza y cargadores).</li>
+            </ul>
+
+            <p class="clause-title">QUINTA. OBLIGACIONES DE "EL ARRENDADOR".</p>
+            <ol>
+                <li>Proporcionar los documentos originales (Contrato de Arrendamiento, recibos, escrituras si se requieren).</li>
+                <li>Otorgar mandato judicial o carta poder a los abogados asignados.</li>
+                <li>No recibir pagos parciales ni firmar convenios con el inquilino sin la supervision de "CONSULTORIO LEGAL".</li>
+            </ol>
+
+            <p class="clause-title">SEXTA. VIGENCIA.</p>
+            <p>La vigencia de este contrato es de <strong>12 meses</strong>, iniciando el dia de la firma del arrendamiento y concluyendo en la fecha en que el inmueble sea entregado formalmente.</p>
+
+            <h2>R E S T R I C C I O N E S</h2>
+
+            <p class="clause-title">PRIMERA. CADUCIDAD POR OMISION.</p>
+            <p>El servicio quedara sin efecto si "EL ARRENDADOR" permite que el adeudo del inquilino exceda los <strong>3 meses</strong> sin haber dado aviso por escrito al despacho.</p>
+
+            <p class="clause-title">SEGUNDA. PACTO DE EXCLUSIVIDAD.</p>
+            <p>"EL ARRENDADOR" pierde la cobertura si contrata abogados externos para el mismo asunto o si realiza actos de cobranza por medios propios que impliquen violencia o amenazas.</p>
+
+            <div class="data-box">
+                <h2>DATOS DEL EXPEDIENTE DE COBERTURA</h2>
+                <p><strong>Inmueble:</strong> ${direccion}</p>
+                <p><strong>Inquilinos:</strong> ${arrendatarioNombre}</p>
+                <p><strong>Renta Garantizada:</strong> ${renta}</p>
+            </div>
+
+            <div class="signatures">
+                <div class="sig-block">
+                    <br><br><br>
+                    <strong>"ARRENDADOR"</strong><br>${arrendadorNombre}
+                </div>
+                <div class="sig-block">
+                    <br><br><br>
+                    <strong>"CONSULTORIO LEGAL"</strong><br>LIC. ERIK HIPOLITO ALVARADO
+                </div>
+            </div>
+        </body></html>`;
+
+        openDoc(html);
+    }
+
+    // ========== GENERATE: PAGARES ==========
+    function generarPagares() {
+        const meses = parseInt(getVal('mesesVigencia')) || 12;
+        const renta = parseFloat(getVal('rentaMensual')) || 0;
+        const rentaLetra = getVal('rentaLetra') || '';
+        const acreedor = getVal('arrendadorNombre').toUpperCase() || 'NOMBRE DEL ACREEDOR';
+        const deudor = getVal('arrendatarioNombre').toUpperCase() || 'NOMBRE DEL DEUDOR';
+        const deudorDom = getVal('arrendatarioDomicilio') || '';
+        const deudorTel = getVal('arrendatarioTel') || '';
+        const aval = getVal('obligadoNombre').toUpperCase() || 'NOMBRE DEL AVAL';
+        const avalDom = getVal('obligadoDomicilio') || '';
+        const avalTel = getVal('obligadoTel') || '';
+        const fechaInicio = getVal('fechaInicio');
+        const lugar = getVal('lugarFirma') || 'QUERETARO';
+
+        let pagares = '';
+        for (let i = 0; i < meses; i++) {
+            let fechaVenc = '';
+            let fechaSuscribe = '';
+            if (fechaInicio) {
+                const fv = new Date(fechaInicio + 'T12:00:00');
+                fv.setMonth(fv.getMonth() + i);
+                fechaVenc = formatDate(fv.toISOString().split('T')[0]);
+                fechaSuscribe = formatDate(fechaInicio);
+            }
+
+            pagares += `
+                ${i > 0 ? '<div class="page-break"></div>' : ''}
+                <div style="border: 2px solid #1a365d; padding: 25px; margin: 20px 0; border-radius: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <div><strong>PAGARE No. ${i + 1} de ${meses}</strong></div>
+                        <div><strong>BUENO POR: ${formatMoney(renta)}</strong></div>
+                    </div>
+
+                    <p>En la ciudad de <strong>${lugar}</strong>, a <strong>${fechaSuscribe || '_______________'}</strong>.</p>
+
+                    <p>Debo y pagare incondicionalmente a la orden de <strong>${acreedor}</strong>, el dia <strong>${fechaVenc || '_______________'}</strong>, la cantidad de <strong>${formatMoney(renta)} (${rentaLetra})</strong>.</p>
+
+                    <p>Valor recibido a mi entera satisfaccion. Este pagare forma parte de una serie de <strong>${meses}</strong> pagares y es el numero <strong>${i + 1}</strong>. El presente pagare causara intereses moratorios a razon del 10% mensual a partir de la fecha de su vencimiento y hasta su total liquidacion.</p>
+
+                    <p>El suscriptor y el aval renuncian expresamente a los beneficios de orden y excusion.</p>
+
+                    <div style="display:flex; justify-content:space-between; margin-top:30px;">
+                        <div style="width:45%;">
+                            <p><strong>SUSCRIPTOR (DEUDOR):</strong></p>
+                            <br><br>
+                            <div style="border-top:1px solid #333; padding-top:5px;">
+                                <strong>${deudor}</strong><br>
+                                <small>Domicilio: ${deudorDom}</small><br>
+                                <small>Tel: ${deudorTel}</small>
+                            </div>
+                        </div>
+                        <div style="width:45%;">
+                            <p><strong>AVAL:</strong></p>
+                            <br><br>
+                            <div style="border-top:1px solid #333; padding-top:5px;">
+                                <strong>${aval}</strong><br>
+                                <small>Domicilio: ${avalDom}</small><br>
+                                <small>Tel: ${avalTel}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        const wm = shouldShowWatermark();
+        const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Pagares</title>${docStyles(wm)}</head><body>
+            ${wm ? '<div class="borrador-watermark">BORRADOR</div>' : ''}
+            <div class="header-doc">
+                <div class="logo-name">AVALA</div>
+                <div class="logo-sub">PAGARES DE ARRENDAMIENTO</div>
+            </div>
+            ${pagares}
+        </body></html>`;
+
+        openDoc(html);
+    }
+
+    // ========== GENERATE: AVISO DE PRIVACIDAD ==========
+    function generarAvisoPrivacidad() {
+        const wm = shouldShowWatermark();
+        const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Aviso de Privacidad</title>${docStyles(wm)}</head><body>
+            ${wm ? '<div class="borrador-watermark">BORRADOR</div>' : ''}
+            <div class="header-doc">
+                <div class="logo-name">ABOGIA SAPI DE C.V.</div>
+                <div class="logo-sub">ABOGIA SAPI DE C.V. — Aviso de Privacidad Integral</div>
+            </div>
+
+            <h1>AVISO DE PRIVACIDAD INTEGRAL</h1>
+
+            <p>En cumplimiento a lo dispuesto por la Ley Federal de Proteccion de Datos Personales en Posesion de los Particulares (en adelante "la Ley"), su Reglamento y los Lineamientos del Aviso de Privacidad, <strong>ABOGIA SAPI DE C.V.</strong> (en adelante "ABOGIA"), con domicilio en Rufino Tamayo 55, 201, Pueblo Nuevo, Corregidora, Queretaro, es responsable del tratamiento de sus datos personales.</p>
+
+            <p class="clause-title">I. DATOS PERSONALES QUE RECABAMOS</p>
+            <p>Para las finalidades senaladas en el presente Aviso de Privacidad, ABOGIA podra recabar las siguientes categorias de datos personales:</p>
+            <ul>
+                <li><strong>Datos de identificacion:</strong> Nombre completo, fecha de nacimiento, nacionalidad, estado civil, numero de identificacion oficial (INE), CURP, RFC, fotografia.</li>
+                <li><strong>Datos de contacto:</strong> Domicilio particular y laboral, numero telefonico fijo y celular, correo electronico.</li>
+                <li><strong>Datos laborales:</strong> Ocupacion, nombre de la empresa, puesto, antiguedad, ingresos mensuales, domicilio laboral, telefono laboral.</li>
+                <li><strong>Datos financieros:</strong> Numero de cuenta bancaria, CLABE interbancaria, nombre del banco, informacion de ingresos.</li>
+                <li><strong>Datos patrimoniales:</strong> Informacion sobre bienes inmuebles ofrecidos en garantia, datos registrales de escrituras.</li>
+                <li><strong>Referencias personales y comerciales:</strong> Nombre y telefono de familiares, conocidos y referencias comerciales.</li>
+            </ul>
+
+            <p class="clause-title">II. FINALIDADES DEL TRATAMIENTO</p>
+            <p><strong>Finalidades primarias (necesarias para la relacion juridica):</strong></p>
+            <ul>
+                <li>Elaboracion, gestion y administracion de contratos de arrendamiento.</li>
+                <li>Emision de polizas juridicas de arrendamiento.</li>
+                <li>Generacion de pagares y documentos legales vinculados al arrendamiento.</li>
+                <li>Verificacion de identidad y solvencia de arrendatarios, arrendadores, obligados solidarios y fiadores.</li>
+                <li>Prestacion de servicios de asesoria y representacion legal.</li>
+                <li>Cobranza judicial y extrajudicial de rentas vencidas.</li>
+                <li>Cumplimiento de obligaciones legales, incluyendo las previstas en la Ley Federal para la Prevencion e Identificacion de Operaciones con Recursos de Procedencia Ilicita.</li>
+            </ul>
+            <p><strong>Finalidades secundarias (no necesarias, pero utiles):</strong></p>
+            <ul>
+                <li>Envio de comunicaciones sobre nuevos servicios, promociones o informacion relevante.</li>
+                <li>Elaboracion de estadisticas e informes internos.</li>
+                <li>Evaluacion de la calidad de nuestros servicios.</li>
+            </ul>
+            <p>Si usted no desea que sus datos personales sean tratados para las finalidades secundarias, puede manifestarlo enviando un correo electronico a <strong>consultoriolegalsc@gmail.com</strong>.</p>
+
+            <p class="clause-title">III. TRANSFERENCIA DE DATOS</p>
+            <p>ABOGIA podra transferir sus datos personales a:</p>
+            <ul>
+                <li>Autoridades judiciales y administrativas, cuando sea requerido para el ejercicio de sus funciones.</li>
+                <li>Abogados externos asociados, para la prestacion de servicios legales en su beneficio.</li>
+                <li>El arrendador o arrendatario correspondiente, segun sea necesario para la ejecucion del contrato de arrendamiento.</li>
+            </ul>
+
+            <p class="clause-title">IV. DERECHOS ARCO</p>
+            <p>Usted tiene derecho a Acceder, Rectificar, Cancelar u Oponerse al tratamiento de sus datos personales (Derechos ARCO). Para ejercer estos derechos, debera presentar una solicitud por escrito dirigida a ABOGIA al correo electronico <strong>consultoriolegalsc@gmail.com</strong> o en nuestro domicilio, que contenga:</p>
+            <ul>
+                <li>Nombre y domicilio del titular o medio para comunicar la respuesta.</li>
+                <li>Documentos que acrediten la identidad del titular.</li>
+                <li>Descripcion clara de los datos personales respecto de los cuales busca ejercer sus derechos.</li>
+                <li>Cualquier elemento que facilite la localizacion de los datos personales.</li>
+            </ul>
+            <p>ABOGIA dara respuesta a su solicitud en un plazo maximo de 20 dias habiles contados a partir de la recepcion de la solicitud.</p>
+
+            <p class="clause-title">V. MECANISMOS DE SEGURIDAD</p>
+            <p>ABOGIA implementa medidas de seguridad administrativas, tecnicas y fisicas para proteger sus datos personales contra dano, perdida, alteracion, destruccion, o acceso no autorizado.</p>
+
+            <p class="clause-title">VI. MODIFICACIONES AL AVISO DE PRIVACIDAD</p>
+            <p>ABOGIA se reserva el derecho de modificar el presente Aviso de Privacidad. Las modificaciones seran notificadas a traves de nuestro sitio web o por correo electronico.</p>
+
+            <p class="clause-title">VII. CONSENTIMIENTO</p>
+            <p>Al proporcionar sus datos personales a ABOGIA, usted manifiesta su consentimiento para que estos sean tratados conforme a lo establecido en el presente Aviso de Privacidad.</p>
+
+            <p class="clause-title">VIII. CONTACTO</p>
+            <p>Para cualquier duda o aclaracion respecto al tratamiento de sus datos personales, puede contactarnos en:</p>
+            <ul>
+                <li><strong>ABOGIA SAPI DE C.V.</strong></li>
+                <li>Rufino Tamayo 55, 201, Pueblo Nuevo, Corregidora, Queretaro.</li>
+                <li>Telefono: 4423228815</li>
+                <li>Correo: consultoriolegalsc@gmail.com</li>
+            </ul>
+
+            <p style="margin-top:30px;"><strong>Ultima actualizacion:</strong> ${new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}.</p>
+
+            <br><br>
+            <div style="text-align:center; border-top:1px solid #333; width:50%; margin:0 auto; padding-top:10px;">
+                <strong>ABOGIA SAPI DE C.V.</strong><br>
+                LIC. ERIK HIPOLITO ALVARADO<br>
+                <small>Representante Legal</small>
+            </div>
+        </body></html>`;
+
+        openDoc(html);
+    }
+
+    // ========== FILE UPLOAD ==========
+    function handleUpload(input, listId) {
+        const list = document.getElementById(listId);
+        const files = input.files;
+        for (let i = 0; i < files.length; i++) {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>&#9989; ${files[i].name} (${(files[i].size/1024).toFixed(0)} KB)</span><button onclick="this.parentElement.remove()">&#10005;</button>`;
+            list.appendChild(li);
+        }
+    }
+
+    // ========== GENERATE: RESULTADO DE INVESTIGACION ==========
+    function generarResultadoInvestigacion() {
+        const arrendatarioNombre = getVal('arrendatarioNombre').toUpperCase() || 'NOMBRE DEL PROSPECTO';
+        const obligadoNombre = getVal('obligadoNombre').toUpperCase() || '';
+        const uso = getVal('usoInmueble') || 'Casa Habitacion';
+        const profesion = getVal('arrendatarioProfesion') || '';
+        const ingreso = formatMoney(getVal('arrendatarioIngreso'));
+        const lugar = getVal('lugarFirma') || 'Queretaro';
+        const estado = getVal('estadoJurisdiccion') || 'Queretaro';
+        const hoy = new Date();
+        const fechaHoy = hoy.getDate() + ' de ' + ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][hoy.getMonth()] + ' del ' + hoy.getFullYear();
+
+        const nombresInvestigados = obligadoNombre ?
+            `${arrendatarioNombre} Y DE ${obligadoNombre}` : arrendatarioNombre;
+
+        const wm = shouldShowWatermark();
+        const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Resultado de Investigacion</title>${docStyles(wm)}</head><body>
+            ${wm ? '<div class="borrador-watermark">BORRADOR</div>' : ''}
+            <div class="header-doc">
+                <div class="logo-name">AVALA</div>
+                <div class="logo-sub">ABOGIA SAPI DE C.V. — Proteccion Juridica Inmobiliaria</div>
+            </div>
+
+            <h1>RESULTADO DE INVESTIGACION<br>PROTECCION JURIDICA INMOBILIARIA</h1>
+
+            <p style="text-align:center;"><strong>${lugar}, ${estado} a ${fechaHoy}.</strong></p>
+
+            <p>Por medio del presente y con la finalidad de brindarle certeza legal, se extiende a continuacion y de manera detallada, la informacion tanto personal como el Estatus Legal de <strong>${nombresInvestigados}</strong> que figura como prospecto para ser arrendatario de la propiedad motivo de esta investigacion, debido a que nos sometemos a Ley Federal de Datos Personales en Posesion de Particulares protegemos de forma correcta y legal los datos y documentos que se nos han sido proporcionados por lo que no podemos proporcionar datos de manera especifica, sin embargo, el despacho se hace responsable de la informacion que se presenta a continuacion, a fin de tener una investigacion clara y precisa.</p>
+
+            <p><strong>OBJETO DE LA INVESTIGACION:</strong> ${uso}</p>
+
+            <h2>I. DATOS PERSONALES DEL SOLICITANTE</h2>
+
+            <h2 style="text-align:left;">I. VALIDEZ EN LA DOCUMENTACION.</h2>
+            <p>Se verifico la validez y legalidad de su identificacion oficial mediante plataforma del INE de <strong>${arrendatarioNombre}</strong> teniendo un resultado favorable respecto a la legitimacion de los documentos, mediante los codigos, fotografia y la informacion que se precisa.</p>
+
+            <h2 style="text-align:left;">II. INCIDENCIAS LEGALES NACIONALES.</h2>
+            <p>Se realizo investigacion dentro de Plataforma Nacional en Tribunales y Oficinas de Justicia de todos los estados de los Estados Unidos Mexicanos, en el ambito Penal, Civil, Mercantil, Laboral, Administrativo.</p>
+
+            <div class="data-box">
+                <p><strong>EL PRESENTE REPORTE SE EMITE CON FUNDAMENTO EN EL ARTICULO 18 FRACCION II DE LA LEY DE TRANSPARENCIA Y ACCESO A LA INFORMACION PUBLICA GUBERNAMENTAL Y SE CONSTITUYE POR INFORMACION PUBLICA, CONSIDERADA NO CONFIDENCIAL POR TRATARSE DE REGISTROS PUBLICOS O EN FUENTES DE ACCESO PUBLICO.</strong></p>
+            </div>
+
+            <h2 style="text-align:left;">III. SISTEMAS DE BUSQUEDA.</h2>
+            <p>Sistemas de investigacion Publica Oficial emitida por dependencias nacionales, siendo estas de dominio publico.</p>
+            <p>A) Sistemas de investigacion de creditos y financieras en toda la Republica Mexicana (no es dominio publico).</p>
+            <p>B) Sistema de informacion publica emitida por instituciones autorizadas para emitir credenciales dentro del pais.</p>
+
+            <h2 style="text-align:left;">IV. RESULTADO DE ACTIVIDAD ECONOMICA.</h2>
+            <p><strong>${profesion || '________________'}</strong></p>
+            <p><strong>DECLARADO DE ${ingreso}</strong></p>
+
+            <h2>COMENTARIOS Y MARCO JURIDICO.</h2>
+            <p>No se detectan homonimias hasta ahora y debido a que es un proceso continuo por lo que es importante se maneje la informacion con la debida precaucion.</p>
+            <p>El despacho es responsable del manejo, uso y privacidad de la informacion solicitada por ustedes, por lo que la misma solo sera utilizada para lo solicitado en virtud de dar certeza al interesado y cuente con los datos legales para realizar su operacion.</p>
+            <p>Este reporte tiene como fuente, la informacion publica contenida en las listas de acuerdos y boletines de los tribunales Superiores en cumplimiento y en ejercicio entre otros de los art. 1, 3, 6, 13 fraccion XXII de la Ley de Transparencia y Acceso a la Informacion, publicado en la gaceta oficial el dia 8 de mayo del 2003.</p>
+            <p><em>El marco juridico de esta investigacion tambien se suscribe en los articulos 5, 6 de la Constitucion Politica de los Estados Unidos Mexicanos.</em></p>
+
+            <h2>CONCLUSIONES:</h2>
+            <div class="data-box">
+                <p><strong>RECOMENDADO.</strong></p>
+                <p>Los porcentajes que tenemos en su prospecto son de bajo riesgo para su propiedad, por lo que el despacho recomienda como posible Arrendatario a <strong>${arrendatarioNombre}</strong>.</p>
+                <p><strong>CUENTA CON LOS REQUISITOS Y ESTANDARES QUE EL DESPACHO REQUIERE PARA PROTEGER EL INMUEBLE, TENIENDO LEGITIMACION EN SUS IDENTIFICACIONES, VALIDEZ EN SUS REFERENCIAS, SOLVENCIA ECONOMICA Y EL GIRO Y USO ES LEGAL.</strong></p>
+            </div>
+
+            <p style="margin-top:40px;">Quedo de usted:</p>
+            <br><br>
+            <div style="text-align:center; width:50%; margin:0 auto;">
+                <div style="border-top:1px solid #333; padding-top:10px;">
+                    <strong>LIC. ERIK HIPOLITO ALVARADO.</strong>
+                </div>
+            </div>
+        </body></html>`;
+
+        openDoc(html);
+    }
+
+    // ========== GENERATE ALL ==========
+    function generarTodos() {
+        generarContrato();
+        setTimeout(() => generarPoliza(), 500);
+        setTimeout(() => generarPagares(), 1000);
+        setTimeout(() => generarResultadoInvestigacion(), 1500);
+        setTimeout(() => generarAvisoPrivacidad(), 2000);
+    }
+
+    // ========== OPEN DOCUMENT ==========
+    function openDoc(html) {
+        const w = window.open('', '_blank');
+        w.document.write(html);
+        w.document.close();
+    }
+
+    // ========== INIT ==========
+    document.addEventListener('DOMContentLoaded', () => {
+        // Set today's date
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fechaFirma').value = today;
+        document.getElementById('fechaInicio').value = today;
+        calcularFechaFin();
+        updateProgress();
+        // Check for existing session
+        checkSession();
+    });
+</script>
+
+</body>
+</html>
