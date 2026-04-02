@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIGITALIA — Consultoria Digital y Redes Sociales</title>
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --purple:#6C2BD9;--blue:#2563EB;--cyan:#06B6D4;
+  --dark:#0B0F1A;--dark2:#111827;--gray100:#F3F4F6;--gray200:#E5E7EB;
+  --gray400:#9CA3AF;--gray600:#4B5563;--white:#FFFFFF;
+  --grad:linear-gradient(135deg,var(--purple),var(--blue));
+  --grad2:linear-gradient(135deg,var(--blue),var(--cyan));
+  --radius:16px;--radius-sm:10px;
+  --shadow:0 4px 24px rgba(0,0,0,.08);
+  --shadow-lg:0 12px 48px rgba(108,43,217,.18);
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Segoe UI',system-ui,-apple-system,Helvetica,Arial,sans-serif;color:var(--dark);line-height:1.6;overflow-x:hidden;background:var(--white)}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+button,input,textarea,select{font:inherit;border:none;outline:none}
+
+/* ===== UTILITY ===== */
+.container{width:90%;max-width:1200px;margin:0 auto}
+.section-label{display:inline-block;font-size:.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.75rem}
+.section-title{font-size:clamp(2rem,5vw,3rem);font-weight:800;line-height:1.15;margin-bottom:1rem}
+.section-sub{font-size:1.1rem;color:var(--gray600);max-width:600px}
+.text-center{text-align:center}
+.mx-auto{margin-left:auto;margin-right:auto}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 2rem;border-radius:50px;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .3s}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 4px 20px rgba(108,43,217,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(108,43,217,.45)}
+.btn-outline{border:2px solid rgba(255,255,255,.4);color:#fff;background:transparent}
+.btn-outline:hover{background:rgba(255,255,255,.12);border-color:#fff}
+.btn-dark{background:var(--grad);color:#fff;box-shadow:0 4px 20px rgba(108,43,217,.3)}
+.btn-dark:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(108,43,217,.4)}
+
+/* ===== NAVBAR ===== */
+.navbar{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:1.25rem 0;transition:all .35s}
+.navbar.scrolled{background:rgba(11,15,26,.92);backdrop-filter:blur(16px);padding:.75rem 0;box-shadow:0 2px 24px rgba(0,0,0,.18)}
+.navbar .container{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:1.6rem;font-weight:900;letter-spacing:2px;color:#fff}
+.nav-logo span{background:var(--grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{color:rgba(255,255,255,.8);font-size:.9rem;font-weight:500;transition:color .3s}
+.nav-links a:hover{color:#fff}
+.nav-cta{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;padding:.55rem 1.5rem;border-radius:50px;font-weight:600;font-size:.9rem;transition:all .3s;cursor:pointer}
+.nav-cta:hover{background:rgba(255,255,255,.22)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:24px;height:2px;background:#fff;transition:all .3s;border-radius:2px}
+.mobile-menu{display:none;position:fixed;inset:0;background:rgba(11,15,26,.97);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:2rem}
+.mobile-menu.active{display:flex}
+.mobile-menu a{color:#fff;font-size:1.3rem;font-weight:600}
+.mobile-menu .close-menu{position:absolute;top:1.5rem;right:1.5rem;color:#fff;font-size:2rem;cursor:pointer;background:none;border:none}
+
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;background:var(--dark);padding:8rem 0 5rem}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg canvas{width:100%;height:100%}
+.hero-gradient{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(108,43,217,.4),transparent 60%),radial-gradient(ellipse at 70% 30%,rgba(37,99,235,.35),transparent 55%),radial-gradient(ellipse at 50% 80%,rgba(6,182,212,.2),transparent 50%);animation:gradientPulse 8s ease-in-out infinite alternate;z-index:1}
+@keyframes gradientPulse{
+  0%{opacity:.8;transform:scale(1)}
+  100%{opacity:1;transform:scale(1.05)}
+}
+.hero .container{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.hero-content h1{font-size:clamp(2.4rem,5.5vw,4rem);font-weight:900;color:#fff;line-height:1.08;margin-bottom:1.25rem}
+.hero-content h1 .grad-text{background:var(--grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-content p{font-size:1.15rem;color:rgba(255,255,255,.7);margin-bottom:2rem;max-width:520px;line-height:1.7}
+.hero-buttons{display:flex;gap:1rem;flex-wrap:wrap}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.hero-stat-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:1.5rem;backdrop-filter:blur(8px);transition:transform .3s}
+.hero-stat-card:hover{transform:translateY(-4px)}
+.hero-stat-card .stat-num{font-size:2rem;font-weight:800;background:var(--grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-stat-card .stat-label{font-size:.85rem;color:rgba(255,255,255,.6);margin-top:.25rem}
+.hero-stat-card .stat-bar{height:4px;border-radius:4px;background:rgba(255,255,255,.1);margin-top:.75rem;overflow:hidden}
+.hero-stat-card .stat-bar-fill{height:100%;border-radius:4px;background:var(--grad2);width:0;transition:width 1.5s ease}
+
+@media(max-width:900px){
+  .hero .container{grid-template-columns:1fr}
+  .hero-stats{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+  .hero-stats{grid-template-columns:1fr}
+  .hero-buttons{flex-direction:column}
+  .hero-buttons .btn{justify-content:center}
+}
+
+/* ===== SERVICES ===== */
+.services{padding:6rem 0;background:var(--white)}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.service-card{background:var(--white);border:1px solid var(--gray200);border-radius:var(--radius);padding:2rem;transition:all .35s;position:relative;overflow:hidden}
+.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);transform:scaleX(0);transition:transform .35s;transform-origin:left}
+.service-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:transparent}
+.service-card:hover::before{transform:scaleX(1)}
+.service-icon{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,rgba(108,43,217,.1),rgba(37,99,235,.1));display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;font-size:1.4rem}
+.service-card h3{font-size:1.15rem;font-weight:700;margin-bottom:.5rem}
+.service-card p{font-size:.95rem;color:var(--gray600);line-height:1.6}
+
+@media(max-width:900px){.services-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.services-grid{grid-template-columns:1fr}}
+
+/* ===== STATS ===== */
+.stats{padding:5rem 0;background:var(--dark);position:relative;overflow:hidden}
+.stats::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(108,43,217,.25),transparent 70%)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;position:relative;z-index:1}
+.stat-item{text-align:center}
+.stat-number{font-size:clamp(2.5rem,5vw,3.5rem);font-weight:900;background:var(--grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.stat-suffix{font-size:clamp(1.5rem,3vw,2rem);font-weight:700}
+.stat-desc{color:rgba(255,255,255,.6);font-size:1rem;margin-top:.5rem;font-weight:500}
+
+@media(max-width:768px){.stats-grid{grid-template-columns:repeat(2,1fr);gap:2.5rem}}
+@media(max-width:420px){.stats-grid{grid-template-columns:1fr}}
+
+/* ===== PROCESO ===== */
+.proceso{padding:6rem 0;background:var(--gray100)}
+.proceso-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:3rem;position:relative}
+.proceso-step{text-align:center;padding:2rem 1.5rem;position:relative}
+.step-num{width:56px;height:56px;border-radius:50%;background:var(--grad);color:#fff;font-size:1.2rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;position:relative;z-index:2}
+.step-line{position:absolute;top:calc(2rem + 28px);left:calc(50% + 28px);width:calc(100% - 56px);height:3px;background:linear-gradient(90deg,var(--purple),var(--blue));z-index:1}
+.proceso-step:last-child .step-line{display:none}
+.proceso-step h3{font-size:1.1rem;font-weight:700;margin-bottom:.5rem}
+.proceso-step p{font-size:.9rem;color:var(--gray600);line-height:1.6}
+
+@media(max-width:768px){
+  .proceso-steps{grid-template-columns:1fr;max-width:420px;margin-left:auto;margin-right:auto}
+  .step-line{display:none !important}
+}
+
+/* ===== PLANES ===== */
+.planes{padding:6rem 0;background:var(--white)}
+.planes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;align-items:start}
+.plan-card{border:1px solid var(--gray200);border-radius:var(--radius);padding:2.5rem 2rem;transition:all .35s;position:relative;background:#fff}
+.plan-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.plan-card.popular{border:2px solid var(--purple);box-shadow:var(--shadow-lg)}
+.plan-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--grad);color:#fff;padding:.35rem 1.25rem;border-radius:50px;font-size:.8rem;font-weight:700;letter-spacing:1px}
+.plan-name{font-size:1.15rem;font-weight:700;color:var(--gray600);margin-bottom:.25rem}
+.plan-price{font-size:2.5rem;font-weight:900;color:var(--dark);line-height:1.2}
+.plan-price span{font-size:.95rem;font-weight:500;color:var(--gray400)}
+.plan-divider{height:1px;background:var(--gray200);margin:1.5rem 0}
+.plan-features{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2rem}
+.plan-feature{display:flex;align-items:flex-start;gap:.6rem;font-size:.93rem;color:var(--gray600)}
+.plan-feature .check{color:var(--cyan);font-weight:700;flex-shrink:0;margin-top:2px}
+.plan-card .btn{width:100%;justify-content:center}
+.plan-card.popular .btn{background:var(--grad);color:#fff}
+
+@media(max-width:900px){.planes-grid{grid-template-columns:1fr;max-width:420px;margin-left:auto;margin-right:auto}}
+
+/* ===== TESTIMONIALS ===== */
+.testimonials{padding:6rem 0;background:var(--gray100)}
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.testimonial-card{background:#fff;border-radius:var(--radius);padding:2rem;border:1px solid var(--gray200);transition:all .35s}
+.testimonial-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.testimonial-stars{color:#FBBF24;font-size:1.1rem;margin-bottom:1rem;letter-spacing:2px}
+.testimonial-text{font-size:.95rem;color:var(--gray600);line-height:1.7;margin-bottom:1.25rem;font-style:italic}
+.testimonial-author{display:flex;align-items:center;gap:.75rem}
+.testimonial-avatar{width:44px;height:44px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1rem;flex-shrink:0}
+.testimonial-name{font-weight:700;font-size:.95rem}
+.testimonial-role{font-size:.8rem;color:var(--gray400)}
+
+@media(max-width:768px){.testimonials-grid{grid-template-columns:1fr}}
+
+/* ===== CTA / CONTACT ===== */
+.cta-section{padding:6rem 0;background:var(--dark);position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(108,43,217,.3),transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(6,182,212,.2),transparent 50%)}
+.cta-section .container{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.cta-left h2{font-size:clamp(2rem,4vw,2.8rem);font-weight:900;color:#fff;line-height:1.15;margin-bottom:1rem}
+.cta-left p{color:rgba(255,255,255,.65);font-size:1.05rem;line-height:1.7;margin-bottom:1.5rem}
+.cta-left .cta-features{display:flex;flex-direction:column;gap:.75rem}
+.cta-left .cta-feature{display:flex;align-items:center;gap:.6rem;color:rgba(255,255,255,.8);font-size:.95rem}
+.cta-feature .feat-icon{color:var(--cyan)}
+.contact-form{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:2.5rem;backdrop-filter:blur(8px)}
+.form-group{margin-bottom:1.15rem}
+.form-group label{display:block;color:rgba(255,255,255,.7);font-size:.85rem;font-weight:600;margin-bottom:.4rem}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:.8rem 1rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius-sm);color:#fff;font-size:.95rem;transition:border .3s}
+.form-group input::placeholder,.form-group textarea::placeholder{color:rgba(255,255,255,.35)}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--cyan);background:rgba(255,255,255,.1)}
+.form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center}
+.form-group select option{background:var(--dark);color:#fff}
+.form-group textarea{resize:vertical;min-height:90px}
+.form-error{color:#F87171;font-size:.8rem;margin-top:.3rem;display:none}
+.form-submit{width:100%;padding:1rem;border-radius:50px;background:var(--grad);color:#fff;font-weight:700;font-size:1rem;cursor:pointer;transition:all .3s;border:none;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.form-submit:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(108,43,217,.4)}
+.form-submit svg{width:20px;height:20px}
+
+@media(max-width:900px){
+  .cta-section .container{grid-template-columns:1fr}
+  .cta-left{text-align:center}
+  .cta-left .cta-features{align-items:center}
+}
+
+/* ===== FOOTER ===== */
+.footer{background:var(--dark2);padding:4rem 0 2rem;border-top:1px solid rgba(255,255,255,.06)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.footer-brand .nav-logo{font-size:1.4rem;margin-bottom:1rem;display:inline-block}
+.footer-brand p{color:rgba(255,255,255,.5);font-size:.9rem;line-height:1.7;max-width:300px}
+.footer-col h4{color:#fff;font-size:.95rem;font-weight:700;margin-bottom:1rem}
+.footer-col a,.footer-col p{color:rgba(255,255,255,.5);font-size:.88rem;line-height:2;display:block;transition:color .3s}
+.footer-col a:hover{color:var(--cyan)}
+.footer-social{display:flex;gap:.75rem;margin-top:1rem}
+.footer-social a{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);transition:all .3s;font-size:.9rem}
+.footer-social a:hover{background:var(--grad);color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-bottom p{color:rgba(255,255,255,.35);font-size:.82rem}
+
+@media(max-width:768px){
+  .footer-grid{grid-template-columns:1fr 1fr;gap:2rem}
+}
+@media(max-width:480px){
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;text-align:center}
+}
+
+/* ===== ANIMATIONS ===== */
+.reveal{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.35s}
+.reveal-delay-5{transition-delay:.4s}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:var(--purple);border-radius:8px}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="#" class="nav-logo"><span>DIGITALIA</span></a>
+    <div class="nav-links">
+      <a href="#servicios">Servicios</a>
+      <a href="#resultados">Resultados</a>
+      <a href="#proceso">Proceso</a>
+      <a href="#planes">Planes</a>
+      <a href="#testimonios">Clientes</a>
+      <a href="#contacto" class="nav-cta">Contactar</a>
+    </div>
+    <div class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="close-menu" id="closeMenu" aria-label="Cerrar">&times;</button>
+  <a href="#servicios" class="mobile-link">Servicios</a>
+  <a href="#resultados" class="mobile-link">Resultados</a>
+  <a href="#proceso" class="mobile-link">Proceso</a>
+  <a href="#planes" class="mobile-link">Planes</a>
+  <a href="#testimonios" class="mobile-link">Clientes</a>
+  <a href="#contacto" class="mobile-link">Contactar</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-gradient"></div>
+  <div class="container">
+    <div class="hero-content">
+      <p class="section-label">Consultoria Digital y Redes Sociales</p>
+      <h1>Impulsa tu marca en el <span class="grad-text">mundo digital</span></h1>
+      <p>Somos el aliado estrategico que tu negocio necesita para crecer en el entorno digital. Transformamos tu presencia en linea con datos, creatividad y resultados medibles.</p>
+      <div class="hero-buttons">
+        <a href="#contacto" class="btn btn-primary">Solicitar cotizacion</a>
+        <a href="#servicios" class="btn btn-outline">Conocer servicios</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat-card">
+        <div class="stat-num">+150</div>
+        <div class="stat-label">Marcas impulsadas</div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-width="92%"></div></div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="stat-num">2M+</div>
+        <div class="stat-label">Alcance mensual</div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-width="87%"></div></div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="stat-num">95%</div>
+        <div class="stat-label">Clientes satisfechos</div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-width="95%"></div></div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="stat-num">+500</div>
+        <div class="stat-label">Campanas exitosas</div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-width="84%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICIOS ===== -->
+<section class="services" id="servicios">
+  <div class="container">
+    <div class="text-center">
+      <p class="section-label reveal">Nuestros Servicios</p>
+      <h2 class="section-title reveal">Soluciones integrales para tu <br>crecimiento digital</h2>
+      <p class="section-sub mx-auto reveal">Cada marca es unica. Creamos estrategias a la medida que conectan con tu audiencia y generan resultados tangibles.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">
+          <svg width="24" height="24" fill="none" stroke="#6C2BD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        </div>
+        <h3>Estrategia Digital</h3>
+        <p>Diseno de estrategias personalizadas para posicionar tu marca y alcanzar tus objetivos de negocio en el entorno digital.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon">
+          <svg width="24" height="24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <h3>Gestion de Redes Sociales</h3>
+        <p>Creacion de contenido, programacion y gestion de comunidad en todas las plataformas para maximizar tu alcance.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon">
+          <svg width="24" height="24" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </div>
+        <h3>Publicidad Digital</h3>
+        <p>Campanas en Meta Ads, Google Ads y TikTok Ads con ROI medible. Optimizamos cada peso de tu inversion publicitaria.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">
+          <svg width="24" height="24" fill="none" stroke="#6C2BD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <h3>Branding y Diseno</h3>
+        <p>Identidad visual, logotipos y material grafico profesional que comunica la esencia de tu marca con impacto.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon">
+          <svg width="24" height="24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h3>Consultoria y Capacitacion</h3>
+        <p>Asesoria para equipos internos en marketing digital. Transferimos conocimiento para que tu equipo crezca.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon">
+          <svg width="24" height="24" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <h3>Analisis y Reportes</h3>
+        <p>Metricas, KPIs y reportes mensuales de rendimiento. Decisiones basadas en datos para escalar tu negocio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="stats" id="resultados">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:3rem">
+      <p class="section-label reveal">Resultados Reales</p>
+      <h2 class="section-title reveal" style="color:#fff">Numeros que hablan por nosotros</h2>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-number"><span class="counter" data-target="150">0</span><span class="stat-suffix">+</span></div>
+        <p class="stat-desc">Marcas impulsadas</p>
+      </div>
+      <div class="stat-item reveal reveal-delay-1">
+        <div class="stat-number"><span class="counter" data-target="2">0</span><span class="stat-suffix">M+</span></div>
+        <p class="stat-desc">Alcance mensual</p>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <div class="stat-number"><span class="counter" data-target="95">0</span><span class="stat-suffix">%</span></div>
+        <p class="stat-desc">Clientes satisfechos</p>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <div class="stat-number"><span class="counter" data-target="500">0</span><span class="stat-suffix">+</span></div>
+        <p class="stat-desc">Campanas exitosas</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROCESO ===== -->
+<section class="proceso" id="proceso">
+  <div class="container">
+    <div class="text-center">
+      <p class="section-label reveal">Nuestro Metodo</p>
+      <h2 class="section-title reveal">Como trabajamos</h2>
+      <p class="section-sub mx-auto reveal">Un proceso claro y estructurado para garantizar que cada proyecto alcance su maximo potencial.</p>
+    </div>
+    <div class="proceso-steps">
+      <div class="proceso-step reveal">
+        <div class="step-num">1</div>
+        <div class="step-line"></div>
+        <h3>Diagnostico</h3>
+        <p>Analizamos tu presencia digital actual, tu mercado y tu competencia para identificar oportunidades.</p>
+      </div>
+      <div class="proceso-step reveal reveal-delay-1">
+        <div class="step-num">2</div>
+        <div class="step-line"></div>
+        <h3>Estrategia</h3>
+        <p>Disenamos un plan a la medida con objetivos claros, canales definidos y cronograma de accion.</p>
+      </div>
+      <div class="proceso-step reveal reveal-delay-2">
+        <div class="step-num">3</div>
+        <div class="step-line"></div>
+        <h3>Ejecucion</h3>
+        <p>Implementamos con creatividad y datos. Contenido, campanas y optimizacion en tiempo real.</p>
+      </div>
+      <div class="proceso-step reveal reveal-delay-3">
+        <div class="step-num">4</div>
+        <h3>Optimizacion</h3>
+        <p>Medimos, ajustamos y escalamos. Mejora continua basada en metricas y resultados reales.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PLANES ===== -->
+<section class="planes" id="planes">
+  <div class="container">
+    <div class="text-center">
+      <p class="section-label reveal">Planes y Paquetes</p>
+      <h2 class="section-title reveal">Elige el plan ideal para tu negocio</h2>
+      <p class="section-sub mx-auto reveal">Paquetes flexibles disenados para cada etapa de crecimiento. Sin contratos a largo plazo.</p>
+    </div>
+    <div class="planes-grid">
+      <!-- Starter -->
+      <div class="plan-card reveal">
+        <p class="plan-name">Starter</p>
+        <p class="plan-price">$4,900 <span>MXN/mes</span></p>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feature"><span class="check">&#10003;</span> Gestion de 2 redes sociales</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> 12 publicaciones al mes</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> Diseno grafico basico</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> Reporte mensual</div>
+        </div>
+        <a href="#contacto" class="btn btn-dark">Comenzar ahora</a>
+      </div>
+      <!-- Growth -->
+      <div class="plan-card popular reveal reveal-delay-1">
+        <div class="plan-badge">POPULAR</div>
+        <p class="plan-name">Growth</p>
+        <p class="plan-price">$9,800 <span>MXN/mes</span></p>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feature"><span class="check">&#10003;</span> Todo lo de Starter</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> Gestion de 4 redes sociales</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> 24 publicaciones al mes</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> Pauta publicitaria incluida</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> Estrategia de contenido</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> Reporte quincenal</div>
+        </div>
+        <a href="#contacto" class="btn btn-dark">Elegir Growth</a>
+      </div>
+      <!-- Enterprise -->
+      <div class="plan-card reveal reveal-delay-2">
+        <p class="plan-name">Enterprise</p>
+        <p class="plan-price">$18,500 <span>MXN/mes</span></p>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feature"><span class="check">&#10003;</span> Todo lo de Growth</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> Gestion ilimitada de redes</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> Contenido de video</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> Branding completo</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> Consultoria semanal</div>
+          <div class="plan-feature"><span class="check">&#10003;</span> Dashboard en tiempo real</div>
+        </div>
+        <a href="#contacto" class="btn btn-dark">Contactar ventas</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="testimonials" id="testimonios">
+  <div class="container">
+    <div class="text-center">
+      <p class="section-label reveal">Testimonios</p>
+      <h2 class="section-title reveal">Lo que dicen nuestros clientes</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testimonial-text">"DIGITALIA transformo por completo nuestra presencia en redes sociales. En solo 3 meses triplicamos nuestro alcance y las ventas en linea crecieron un 40%. Son un equipo increible."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">MR</div>
+          <div>
+            <p class="testimonial-name">Maria Rodriguez</p>
+            <p class="testimonial-role">CEO, Boutique Amara</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-1">
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testimonial-text">"La estrategia de publicidad digital que nos disenaron supero todas nuestras expectativas. El ROI fue impresionante y el equipo siempre estuvo disponible. Totalmente recomendados."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">CG</div>
+          <div>
+            <p class="testimonial-name">Carlos Gutierrez</p>
+            <p class="testimonial-role">Director, Restaurantes El Portal</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-2">
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testimonial-text">"Gracias a la consultoria de DIGITALIA, nuestro equipo interno ahora maneja redes como profesionales. La capacitacion fue clara, practica y enfocada en resultados."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">LP</div>
+          <div>
+            <p class="testimonial-name">Laura Perez</p>
+            <p class="testimonial-role">Gerente de Marketing, TechQro</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA / CONTACT ===== -->
+<section class="cta-section" id="contacto">
+  <div class="container">
+    <div class="cta-left">
+      <p class="section-label">Comienza hoy</p>
+      <h2>Transforma tu presencia digital hoy</h2>
+      <p>Agenda una llamada de diagnostico gratuita y descubre como podemos impulsar tu marca al siguiente nivel.</p>
+      <div class="cta-features">
+        <div class="cta-feature"><span class="feat-icon">&#10003;</span> Diagnostico digital gratuito</div>
+        <div class="cta-feature"><span class="feat-icon">&#10003;</span> Sin compromisos a largo plazo</div>
+        <div class="cta-feature"><span class="feat-icon">&#10003;</span> Respuesta en menos de 24 horas</div>
+        <div class="cta-feature"><span class="feat-icon">&#10003;</span> Equipo especializado en tu industria</div>
+      </div>
+    </div>
+    <form class="contact-form" id="contactForm" novalidate>
+      <div class="form-group">
+        <label for="nombre">Nombre completo *</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+        <p class="form-error" id="errorNombre">Por favor ingresa tu nombre</p>
+      </div>
+      <div class="form-group">
+        <label for="telefono">Telefono / WhatsApp *</label>
+        <input type="tel" id="telefono" name="telefono" placeholder="442 123 4567" required>
+        <p class="form-error" id="errorTelefono">Por favor ingresa tu telefono</p>
+      </div>
+      <div class="form-group">
+        <label for="email">Correo electronico</label>
+        <input type="email" id="email" name="email" placeholder="tu@email.com">
+      </div>
+      <div class="form-group">
+        <label for="giro">Tipo de negocio *</label>
+        <select id="giro" name="giro" required>
+          <option value="" disabled selected>Selecciona tu giro</option>
+          <option value="Restaurante / Alimentos">Restaurante / Alimentos</option>
+          <option value="Tienda / Retail">Tienda / Retail</option>
+          <option value="Servicios profesionales">Servicios profesionales</option>
+          <option value="Salud y bienestar">Salud y bienestar</option>
+          <option value="Inmobiliaria">Inmobiliaria</option>
+          <option value="Tecnologia">Tecnologia</option>
+          <option value="Educacion">Educacion</option>
+          <option value="Otro">Otro</option>
+        </select>
+        <p class="form-error" id="errorGiro">Por favor selecciona tu tipo de negocio</p>
+      </div>
+      <div class="form-group">
+        <label for="mensaje">Mensaje</label>
+        <textarea id="mensaje" name="mensaje" placeholder="Cuentanos sobre tu proyecto o necesidad..."></textarea>
+      </div>
+      <button type="submit" class="form-submit">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
+        Enviar por WhatsApp
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo"><span>DIGITALIA</span></a>
+        <p>Consultoria digital y gestion de redes sociales. Impulsamos marcas en Queretaro y todo Mexico con estrategia, creatividad y resultados.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="#" aria-label="Instagram">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="#" aria-label="TikTok">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Servicios</h4>
+        <a href="#servicios">Estrategia Digital</a>
+        <a href="#servicios">Redes Sociales</a>
+        <a href="#servicios">Publicidad Digital</a>
+        <a href="#servicios">Branding y Diseno</a>
+        <a href="#servicios">Consultoria</a>
+      </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <a href="#proceso">Como trabajamos</a>
+        <a href="#planes">Planes y precios</a>
+        <a href="#testimonios">Clientes</a>
+        <a href="#contacto">Contacto</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <p>Lia Marquez</p>
+        <p>442 200 7919</p>
+        <p>Rufino Tamayo 55,</p>
+        <p>Corregidora, Queretaro</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 DIGITALIA. Todos los derechos reservados.</p>
+      <p>Consultoria Digital y Redes Sociales</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ===== NAVBAR SCROLL ===== */
+  var navbar = document.getElementById('navbar');
+  var lastScroll = 0;
+  window.addEventListener('scroll', function(){
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  }, {passive:true});
+
+  /* ===== MOBILE MENU ===== */
+  var hamburger = document.getElementById('hamburger');
+  var mobileMenu = document.getElementById('mobileMenu');
+  var closeMenu = document.getElementById('closeMenu');
+  hamburger.addEventListener('click', function(){ mobileMenu.classList.add('active'); });
+  closeMenu.addEventListener('click', function(){ mobileMenu.classList.remove('active'); });
+  mobileMenu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ mobileMenu.classList.remove('active'); });
+  });
+
+  /* ===== REVEAL ON SCROLL ===== */
+  var reveals = document.querySelectorAll('.reveal');
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.12});
+  reveals.forEach(function(el){ revealObserver.observe(el); });
+
+  /* ===== COUNTER ANIMATION ===== */
+  var counters = document.querySelectorAll('.counter');
+  var counterDone = new Set();
+  var counterObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting && !counterDone.has(entry.target)){
+        counterDone.add(entry.target);
+        var el = entry.target;
+        var target = parseInt(el.getAttribute('data-target'));
+        var duration = 2000;
+        var start = 0;
+        var startTime = null;
+        function animate(ts){
+          if(!startTime) startTime = ts;
+          var progress = Math.min((ts - startTime) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.floor(eased * target);
+          if(progress < 1) requestAnimationFrame(animate);
+          else el.textContent = target;
+        }
+        requestAnimationFrame(animate);
+      }
+    });
+  }, {threshold:0.3});
+  counters.forEach(function(c){ counterObserver.observe(c); });
+
+  /* ===== HERO STAT BARS ===== */
+  var heroBars = document.querySelectorAll('.stat-bar-fill');
+  setTimeout(function(){
+    heroBars.forEach(function(bar){
+      bar.style.width = bar.getAttribute('data-width');
+    });
+  }, 600);
+
+  /* ===== CONTACT FORM -> WHATSAPP ===== */
+  var form = document.getElementById('contactForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var valid = true;
+    var nombre = document.getElementById('nombre');
+    var telefono = document.getElementById('telefono');
+    var giro = document.getElementById('giro');
+    var email = document.getElementById('email');
+    var mensaje = document.getElementById('mensaje');
+
+    // Reset errors
+    document.querySelectorAll('.form-error').forEach(function(el){ el.style.display='none'; });
+    [nombre,telefono,giro].forEach(function(el){ el.style.borderColor='rgba(255,255,255,.12)'; });
+
+    if(!nombre.value.trim()){
+      document.getElementById('errorNombre').style.display='block';
+      nombre.style.borderColor='#F87171'; valid=false;
+    }
+    if(!telefono.value.trim() || telefono.value.trim().length < 7){
+      document.getElementById('errorTelefono').style.display='block';
+      telefono.style.borderColor='#F87171'; valid=false;
+    }
+    if(!giro.value){
+      document.getElementById('errorGiro').style.display='block';
+      giro.style.borderColor='#F87171'; valid=false;
+    }
+
+    if(!valid) return;
+
+    var text = '*Nuevo contacto desde DIGITALIA*\n\n';
+    text += '*Nombre:* ' + nombre.value.trim() + '\n';
+    text += '*Telefono:* ' + telefono.value.trim() + '\n';
+    if(email.value.trim()) text += '*Email:* ' + email.value.trim() + '\n';
+    text += '*Tipo de negocio:* ' + giro.value + '\n';
+    if(mensaje.value.trim()) text += '*Mensaje:* ' + mensaje.value.trim() + '\n';
+
+    var waURL = 'https://wa.me/524422007919?text=' + encodeURIComponent(text);
+    window.open(waURL, '_blank');
+  });
+
+  /* ===== SMOOTH SCROLL for anchors ===== */
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var target = document.querySelector(this.getAttribute('href'));
+      if(target){
+        e.preventDefault();
+        var offset = 80;
+        var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({top:top, behavior:'smooth'});
+      }
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
